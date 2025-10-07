@@ -12,6 +12,39 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RimasBIY">
         <activity
+            android:name=".TimerScreen"
+            android:exported="false" />
+        <activity
+            android:name=".IngredientsList"
+            android:exported="false" />
+        <activity
+            android:name=".RecipeDetails"
+            android:exported="false" />
+        <activity
+            android:name=".Search"
+            android:exported="false" />
+        <activity
+            android:name=".Settings"
+            android:exported="false" />
+        <activity
+            android:name=".Favorites"
+            android:exported="false" />
+        <activity
+            android:name=".ChangeInRecipe"
+            android:exported="false" />
+        <activity
+            android:name=".Add"
+            android:exported="false" />
+        <activity
+            android:name=".SignIn"
+            android:exported="false" />
+        <activity
+            android:name=".HomeScreen"
+            android:exported="false" />
+        <activity
+            android:name=".MainLoginPage"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

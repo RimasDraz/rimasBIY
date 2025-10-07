@@ -5,15 +5,6 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="252dp"
-        android:layout_height="260dp"
-        android:scaleType="centerCrop"
-        app:srcCompat="@mipmap/ic_launcher"
-        tools:layout_editor_absoluteX="90dp"
-        tools:layout_editor_absoluteY="198dp" />
+    tools:context=".TimerScreen">
 
 </androidx.constraintlayout.widget.ConstraintLayout>
