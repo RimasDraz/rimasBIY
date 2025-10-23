@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RimasBIY">
         <activity
+            android:name=".koko"
+            android:exported="false" />
+        <activity
             android:name=".TimerScreen"
             android:exported="false" />
         <activity
@@ -42,7 +45,7 @@
             android:name=".HomeScreen"
             android:exported="false" />
         <activity
-            android:name=".MainLoginPage"
+            android:name=".signup"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

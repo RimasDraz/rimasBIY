@@ -8,30 +8,27 @@
     android:orientation="vertical"
     tools:context=".SignIn">
 
-    <EditText
-        android:id="@+id/Email"
+    <TextView
+        android:id="@+id/tvAcount"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textEmailAddress"
-        android:text="Email"
-        tools:layout_editor_absoluteX="123dp"
-        tools:layout_editor_absoluteY="106dp" />
+        android:layout_height="102dp"
+        android:backgroundTint="@color/white"
+        android:text="                                               Have an account?"
+        android:textColor="#050000"
+        android:textSize="34sp" />
 
     <EditText
-        android:id="@+id/PhoneN"
+        android:id="@+id/username"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="57dp"
         android:ems="10"
-        android:inputType="phone"
-        android:text="Phonen"
-        tools:layout_editor_absoluteX="123dp"
-        tools:layout_editor_absoluteY="16dp" />
+        android:inputType="text"
+        android:text="User name/ E-mail" />
 
     <EditText
-        android:id="@+id/Password"
+        android:id="@+id/TextPassword"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="71dp"
         android:ems="10"
         android:inputType="textPassword"
         android:text="Password"
@@ -41,18 +38,22 @@
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
+        android:backgroundTint="#FFC9C9"
         android:text="Login" />
 
     <TextView
         android:id="@+id/orr"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="                                                         Or" />
+        android:layout_height="69dp"
+        android:text="                                       Or"
+        android:textSize="20sp" />
 
     <Button
         android:id="@+id/btnSignup"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="69dp"
+        android:backgroundTint="#ffc9c9"
         android:text="SignUp" />
+
 </LinearLayout>
