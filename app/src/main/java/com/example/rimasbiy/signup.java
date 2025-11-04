@@ -33,11 +33,13 @@ public class signup extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;});
+
         EmailText=findViewById(R.id.EmailText);
         TextPhone=findViewById(R.id.TextPhone);
         TextPassword=findViewById(R.id.TextPassword);
         TextPassword2=findViewById(R.id.TextPassword2);
         textup=findViewById(R.id.textup);
+        btnsign=findViewById(R.id.btnsign);
 
 
         btnsign.setOnClickListener(new View.OnClickListener() {

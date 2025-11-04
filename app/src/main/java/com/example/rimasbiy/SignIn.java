@@ -40,14 +40,14 @@ private Button btnSignup;
     btnSignup.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent i=new Intent(SignIn.this, HomeScreen.class);
+            Intent i=new Intent(SignIn.this, signup.class);
             startActivity(i);
         }
     });
     btnLogin.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent r=new Intent(SignIn.this, signup.class);
+            Intent r=new Intent(SignIn.this, HomeScreen.class);
             startActivity(r);
         }
     });

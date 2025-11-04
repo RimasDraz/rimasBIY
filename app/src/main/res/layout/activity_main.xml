@@ -6,15 +6,4 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/ic_launcher"
-    tools:context=".MainActivity">
-
-    <Button
-        android:id="@+id/btnNEXT"
-        android:layout_width="192dp"
-        android:layout_height="71dp"
-        android:text="NEXT"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="114dp"
-        tools:layout_editor_absoluteY="555dp" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    tools:context=".MainActivity"/>

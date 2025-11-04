@@ -53,6 +53,8 @@
         android:id="@+id/btnSignup"
         android:layout_width="match_parent"
         android:layout_height="69dp"
-        android:backgroundTint="#ffc9c9" />
+        android:backgroundTint="#ffc9c9"
+        android:onClick="onClick"
+        android:text="Logup" />
 
 </LinearLayout>

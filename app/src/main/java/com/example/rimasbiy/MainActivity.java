@@ -15,7 +15,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
-    public Button btnNEXT;
+
     private ImageView imgsplash;
 
 
@@ -39,17 +39,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         }, 3000); // 3000 = 3 seconds in milliseconds
-        btnNEXT=findViewById(R.id.btnNEXT);
-        btnNEXT.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i=new Intent(MainActivity.this, SignIn.class);
-                startActivity(i);
+
 
 
 
 
             }
-        });
+
     }
-}
