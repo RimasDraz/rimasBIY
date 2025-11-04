@@ -10,11 +10,11 @@
 
     <Button
         android:id="@+id/btnNEXT"
-        android:layout_width="175dp"
-        android:layout_height="60dp"
+        android:layout_width="192dp"
+        android:layout_height="71dp"
         android:text="NEXT"
-        tools:layout_editor_absoluteX="131dp"
-        tools:layout_editor_absoluteY="566dp"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="114dp"
+        tools:layout_editor_absoluteY="555dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

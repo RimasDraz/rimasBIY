@@ -47,8 +47,8 @@ private Button btnSignup;
     btnLogin.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent i=new Intent(SignIn.this, signup.class);
-            startActivity(i);
+            Intent r=new Intent(SignIn.this, signup.class);
+            startActivity(r);
         }
     });
 

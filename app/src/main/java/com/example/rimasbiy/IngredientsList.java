@@ -1,6 +1,7 @@
 package com.example.rimasbiy;
 
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class IngredientsList extends AppCompatActivity {
+    private Button btntimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

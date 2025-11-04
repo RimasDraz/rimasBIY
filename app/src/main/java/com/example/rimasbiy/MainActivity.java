@@ -3,6 +3,7 @@ package com.example.rimasbiy;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -30,12 +31,24 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent i = new Intent(MainActivity.this, SignIn.class);
+                startActivity(i);
+            }
+        }, 3000); // 3000 = 3 seconds in milliseconds
         btnNEXT=findViewById(R.id.btnNEXT);
         btnNEXT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i=new Intent(MainActivity.this, SignIn.class);
                 startActivity(i);
+
+
+
+
             }
         });
     }

@@ -7,4 +7,11 @@
     android:layout_height="match_parent"
     tools:context=".IngredientsList">
 
+    <Button
+        android:id="@+id/btntimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start timer"
+        tools:layout_editor_absoluteX="147dp"
+        tools:layout_editor_absoluteY="599dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
