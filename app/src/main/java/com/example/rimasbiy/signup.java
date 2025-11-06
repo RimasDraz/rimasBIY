@@ -1,5 +1,6 @@
 package com.example.rimasbiy;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -20,9 +21,14 @@ public class signup extends AppCompatActivity {
     private  EditText TextPassword2;
     private Button btnsign;
     private TextView textup;
+    private TextView textV3;
+    private TextView textV4;
+    private TextView textV5;
+    private TextView textV6;
 
 
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -40,6 +46,10 @@ public class signup extends AppCompatActivity {
         TextPassword2=findViewById(R.id.TextPassword2);
         textup=findViewById(R.id.textup);
         btnsign=findViewById(R.id.btnsign);
+        textV3=findViewById(R.id.textV3);
+        textV4=findViewById(R.id.textV4);
+        textV5=findViewById(R.id.textV5);
+        textV6=findViewById(R.id.textV6);
 
 
         btnsign.setOnClickListener(new View.OnClickListener() {
