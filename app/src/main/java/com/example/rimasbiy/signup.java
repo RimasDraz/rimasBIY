@@ -18,14 +18,13 @@ public class signup extends AppCompatActivity {
     private EditText EmailText;
     private EditText TextPhone;
     private EditText TextPassword;
-    private  EditText TextPassword2;
+    private  EditText TextPasswordd;
     private Button btnsign;
     private TextView textup;
-    private TextView textV3;
-    private TextView textV4;
-    private TextView textV5;
-    private TextView textV6;
-
+    private TextView textVPP;
+    private TextView textVP;
+    private TextView textVE;
+    private TextView textVPH;
 
 
     @SuppressLint("MissingInflatedId")
@@ -43,13 +42,13 @@ public class signup extends AppCompatActivity {
         EmailText=findViewById(R.id.EmailText);
         TextPhone=findViewById(R.id.TextPhone);
         TextPassword=findViewById(R.id.TextPassword);
-        TextPassword2=findViewById(R.id.TextPassword2);
+        TextPasswordd=findViewById(R.id.TextPasswordd);
         textup=findViewById(R.id.textup);
         btnsign=findViewById(R.id.btnsign);
-        textV3=findViewById(R.id.textV3);
-        textV4=findViewById(R.id.textV4);
-        textV5=findViewById(R.id.textV5);
-        textV6=findViewById(R.id.textV6);
+        textVPP=findViewById(R.id.textVPP);
+        textVP=findViewById(R.id.textVP);
+        textVE=findViewById(R.id.textVE);
+        textVPH=findViewById(R.id.textVPH);
 
 
         btnsign.setOnClickListener(new View.OnClickListener() {

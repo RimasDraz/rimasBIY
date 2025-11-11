@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RimasBIY">
         <activity
+            android:name=".TheRecipes"
+            android:exported="false" />
+        <activity
             android:name=".koko"
             android:exported="false" />
         <activity

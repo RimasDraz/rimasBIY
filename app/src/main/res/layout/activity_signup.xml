@@ -58,7 +58,7 @@
         app:layout_constraintTop_toBottomOf="@+id/TextPhone" />
 
     <EditText
-        android:id="@+id/TextPassword2"
+        android:id="@+id/TextPasswordd"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="56dp"
@@ -80,11 +80,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TextPassword2"
+        app:layout_constraintTop_toBottomOf="@+id/TextPasswordd"
         tools:ignore="MissingConstraints" />
 
     <TextView
-        android:id="@+id/textV3"
+        android:id="@+id/textVPP"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="13dp"
@@ -95,7 +95,7 @@
         app:layout_constraintTop_toBottomOf="@+id/TextPassword" />
 
     <TextView
-        android:id="@+id/textV4"
+        android:id="@+id/textVP"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="password"
@@ -105,7 +105,7 @@
         app:layout_constraintTop_toBottomOf="@+id/TextPhone" />
 
     <TextView
-        android:id="@+id/textV5"
+        android:id="@+id/textVE"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="E-mail"
@@ -115,7 +115,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textV6"
+        android:id="@+id/textVPH"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="9dp"
