@@ -1,7 +1,8 @@
 package com.example.rimasbiy.MyRecipeTable;
+import androidx.room.Entity;
 
 import androidx.room.PrimaryKey;
-
+@Entity
 public class Recipe {
     @PrimaryKey(autoGenerate = true)
     private int id;

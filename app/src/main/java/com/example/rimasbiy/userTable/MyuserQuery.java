@@ -12,7 +12,7 @@ import java.util.List;
 public interface MyuserQuery {
     @Query("SELECT * FROM myuser")
     List<Myuser> getAll();
-    @Query("SELECT * FROM myuser WHERE id IN")
+    @Query("SELECT * FROM myuser WHERE id IN(:ids)")
     List<Myuser>loadAllByIds(int[] ids);
     @Query("SELECT * FROM myuser WHERE email = :email AND password = :password")
     Myuser checkEmail(String email,String password);
