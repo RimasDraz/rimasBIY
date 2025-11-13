@@ -3,16 +3,24 @@ package com.example.rimasbiy;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.example.rimasbiy.data.AppDatabase;
+import com.example.rimasbiy.userTable.Myuser;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class signup extends AppCompatActivity {
     private EditText EmailText;
@@ -54,10 +62,54 @@ public class signup extends AppCompatActivity {
         btnsign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i=new Intent(signup.this, HomeScreen.class);
-                startActivity(i);
+               if(validateFields())
+               {
+                   Intent i=new Intent(signup.this, HomeScreen.class);
+                   startActivity(i);
+               }
+               else {
+                   Toast.makeText(signup.this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
+               }
             }
         });
 
     }
+    private boolean validateFields() {
+        boolean flag = true;
+
+        String email = EmailText.getText().toString();
+        String phone = TextPhone.getText().toString();
+        String password = TextPassword.getText().toString();
+        String confirmPassword = TextPasswordd.getText().toString();
+
+        if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            EmailText.setError("Invalid email");
+            flag = false;
+        }
+
+        if (phone.isEmpty() || !Patterns.PHONE.matcher(phone).matches()) {
+            TextPhone.setError("Invalid phone number");
+            flag = false;
+        }
+
+        if (password.isEmpty() || password.length() < 8) {
+            TextPassword.setError("Password must be at least 8 characters");
+            flag = false;
+        }
+
+        if (!password.equals(confirmPassword)) {
+            TextPasswordd.setError("Passwords do not match");
+            flag = false;
+        }
+        if(flag)
+        {
+            Myuser myuser = new Myuser();
+            myuser.setEmail(email);
+            myuser.setphone(phone);
+            myuser.setPassword(password);
+            AppDatabase.getInstance(signup.this).myuserQuery().insertAll(myuser);
+        }
+        return flag;
+    }
+
 }

@@ -10,7 +10,7 @@ public class Myuser {
     public long keyid;
     @ColumnInfo(name = "id")
     private int id;
-    private String name;
+    private String phone;
     private String email;
     private String password;
 
@@ -19,16 +19,47 @@ public class Myuser {
         return "Myuser{" +
                 "keyid=" + keyid +
                 ", id=" + id +
-                ", name='" + name + '\'' +
+                ", name='" + phone + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }
-    public String getid(){
+    public int getid(){
         return id;
     }
     public void setid(int id){
         this.id=id;
+    }
+    public long getKeyid() {
+        return keyid;
+    }
+
+    public void setKeyid(long keyid) {
+        this.keyid = keyid;
+    }
+
+    public String getphone() {
+        return phone;
+    }
+
+    public void setphone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
 
