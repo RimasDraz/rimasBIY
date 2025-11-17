@@ -24,7 +24,7 @@ public class Myuser {
                 ", password='" + password + '\'' +
                 '}';
     }
-    public int getid(){
+    public int getId() {
         return id;
     }
     public void setid(int id){
@@ -38,7 +38,7 @@ public class Myuser {
         this.keyid = keyid;
     }
 
-    public String getphone() {
+    public String getPhone() {
         return phone;
     }
 
@@ -61,5 +61,7 @@ public class Myuser {
     public void setPassword(String password) {
         this.password = password;
     }
+
+
 }
 

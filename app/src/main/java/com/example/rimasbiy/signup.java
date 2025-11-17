@@ -72,7 +72,6 @@ public class signup extends AppCompatActivity {
                }
             }
         });
-
     }
     private boolean validateFields() {
         boolean flag = true;
@@ -109,6 +108,7 @@ public class signup extends AppCompatActivity {
             myuser.setPassword(password);
             AppDatabase.getInstance(signup.this).myuserQuery().insertAll(myuser);
         }
+
         return flag;
     }
 

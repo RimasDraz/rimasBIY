@@ -2,16 +2,22 @@ package com.example.rimasbiy;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.example.rimasbiy.data.AppDatabase;
+import com.example.rimasbiy.userTable.Myuser;
 
 public class SignIn extends AppCompatActivity {
 private TextView tvAcount;
@@ -47,14 +53,41 @@ private Button btnSignup;
     btnLogin.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent r=new Intent(SignIn.this, HomeScreen.class);
-            startActivity(r);
+            if(validateFields())
+            {
+                Intent i=new Intent(SignIn.this, HomeScreen.class);
+                startActivity(i);
+            }
+            else {
+                Toast.makeText(SignIn.this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
+            }
         }
     });
+    }
+private boolean validateFields(){
+    boolean flag=true;
+    String usernameText=username.getText().toString();
+    String passwordText=TextPassword.getText().toString();
 
-
-
+    if(usernameText.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(usernameText).matches()){
+        username.setError("Invalid username");
+        flag=false;
     }
 
+    if(passwordText.isEmpty() || passwordText.length()<8){
+        TextPassword.setError("Password must be at least 8 characters");
+        flag=false;
+    }
+    if(flag)
+    {
+        Myuser myuser = new Myuser();
+        myuser.setEmail(usernameText);
+        myuser.setPassword(passwordText);
+        AppDatabase.getInstance(SignIn.this).myuserQuery().insertAll(myuser);
+    }
+
+
+    return flag;
+}
 
 }

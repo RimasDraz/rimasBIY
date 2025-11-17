@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace 'com.example.rimasbiy'
-    compileSdk 33
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.example.rimasbiy"
