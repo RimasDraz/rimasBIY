@@ -27,9 +27,9 @@ public class Myuser {
     public int getId() {
         return id;
     }
-    public void setid(int id){
-        this.id=id;
-    }
+public void setId(int id){
+    this.id=id;
+}
     public long getKeyid() {
         return keyid;
     }
