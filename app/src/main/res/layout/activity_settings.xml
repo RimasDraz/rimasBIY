@@ -5,12 +5,16 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#493036"
+    android:backgroundTint="#493036"
     tools:context=".Settings">
 
     <TextView
         android:id="@+id/Settings"
         android:layout_width="406dp"
         android:layout_height="52dp"
+        android:background="#62424A"
+        android:backgroundTint="#62424A"
         android:text="Settings"
         app:layout_constraintEnd_toEndOf="parent"
         tools:layout_editor_absoluteY="28dp" />
@@ -27,6 +31,7 @@
         android:id="@+id/button3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="#62424A"
         android:text="Log out"
         tools:layout_editor_absoluteX="-16dp"
         tools:layout_editor_absoluteY="264dp" />
@@ -35,6 +40,7 @@
         android:id="@+id/btnlng"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="#62424A"
         android:text="Button"
         tools:layout_editor_absoluteX="163dp"
         tools:layout_editor_absoluteY="182dp" />
