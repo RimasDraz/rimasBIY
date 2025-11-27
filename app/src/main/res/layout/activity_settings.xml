@@ -13,36 +13,26 @@
         android:id="@+id/Settings"
         android:layout_width="406dp"
         android:layout_height="52dp"
-        android:background="#62424A"
         android:backgroundTint="#62424A"
         android:text="Settings"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteY="28dp" />
+        tools:layout_editor_absoluteY="52dp" />
 
     <Switch
         android:id="@+id/btnswitch"
         android:layout_width="400dp"
         android:layout_height="54dp"
         android:text="Dark mood"
-        tools:layout_editor_absoluteX="6dp"
-        tools:layout_editor_absoluteY="88dp" />
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="184dp" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/btnlogg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="#62424A"
         android:text="Log out"
-        tools:layout_editor_absoluteX="-16dp"
-        tools:layout_editor_absoluteY="264dp" />
-
-    <Button
-        android:id="@+id/btnlng"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#62424A"
-        android:text="Button"
-        tools:layout_editor_absoluteX="163dp"
-        tools:layout_editor_absoluteY="182dp" />
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="325dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

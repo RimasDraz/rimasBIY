@@ -24,16 +24,30 @@ import java.util.regex.Pattern;
 
 public class signup extends AppCompatActivity {
     private EditText EmailText;
+    /**
+     * حقل الايميل
+     */
     private EditText TextPhone;
+    /**
+     * حقل رقم الهاتف
+     */
     private EditText TextPassword;
+    /**
+     * حقل الكلمة السر
+     */
     private  EditText TextPasswordd;
+    /**
+     * تأكيد كلمة السر
+     */
     private Button btnsign;
+    /**
+     * زر التسجيل
+     */
     private TextView textup;
     private TextView textVPP;
     private TextView textVP;
     private TextView textVE;
     private TextView textVPH;
-
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -59,6 +73,14 @@ public class signup extends AppCompatActivity {
         textVPH=findViewById(R.id.textVPH);
 
 
+        /**
+         * عند الضغط على زر btnsign يتم التحقق من صحة الحقول باستخدام الدالة validateFields()
+         * إذا كانت الحقول صالحة، يتم انشاء كائن جديد من Myuser وتم ادخال البيانات في الحقول
+         * في قاعدة البيانات باستخدام AppDatabase.getInstance(signup.this).myuserQuery().insertAll(myuser);
+         * ثم يتم انتقل إلى الصفحة الرئيسية HomeScreen
+         * إذا كانت الحقول غير صالحة، يتم عرض رسالة خطأ باستخدام Toast
+         */
+
         btnsign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,6 +95,14 @@ public class signup extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * الدالة تتحقق بما اذا كانت حقول الe-mail,phone,password,confirm password صالحين.
+     * اذا كان اي من الحقول غير صالح, يتم تعيين خطأ في الحقل ويتم تعيين علامة خطأ.
+     * اذا كان كل الحقول صالحين, يتم تعيين علامة صحيح في الحقل ويتم تعيين علامة صحيح.
+     * اذا كانت جميع الحقول صالحة يتم انشاء كائن جديد my user
+     * @return
+     */
     private boolean validateFields() {
         boolean flag = true;
 
@@ -104,7 +134,7 @@ public class signup extends AppCompatActivity {
         {
             Myuser myuser = new Myuser();
             myuser.setEmail(email);
-            myuser.setphone(phone);
+            myuser.setPhone(phone);
             myuser.setPassword(password);
             AppDatabase.getInstance(signup.this).myuserQuery().insertAll(myuser);
         }

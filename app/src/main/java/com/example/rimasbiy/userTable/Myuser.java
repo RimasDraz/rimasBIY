@@ -3,33 +3,27 @@ package com.example.rimasbiy.userTable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+//Entity = Table =جدول
+//عندما نريد ان نتعامل مع هذه الفئة كجدول معطيات
+/**
+ * فئة تمثل المستعمل
+ */
 
 @Entity
 public class Myuser {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = true)//تحديد الصفة كمفتاح رئيسي والذي يُنتجح بشكل تلقائي
     public long keyid;
-    @ColumnInfo(name = "id")
+    @ColumnInfo(name = "id")//اعطاء اسم جديد للعامود-الصفة في الجدول
     private int id;
-    private String phone;
-    private String email;
+    private String phone;//رقم الهاتف
+    private String email;//بحالة لم يتم اعطاء اسم للعامود يكون اسم الصفه هو اسم العامود
     private String password;
-
-    @Override
-    public String toString() {
-        return "Myuser{" +
-                "keyid=" + keyid +
-                ", id=" + id +
-                ", name='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                '}';
-    }
     public int getId() {
         return id;
     }
-public void setId(int id){
-    this.id=id;
-}
+    public void setId(int id){
+        this.id=id;
+    }
     public long getKeyid() {
         return keyid;
     }
@@ -42,7 +36,7 @@ public void setId(int id){
         return phone;
     }
 
-    public void setphone(String phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
@@ -60,6 +54,18 @@ public void setId(int id){
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Myuser{" +
+                "keyid=" + keyid +
+                ", id=" + id +
+                ", name='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 
 

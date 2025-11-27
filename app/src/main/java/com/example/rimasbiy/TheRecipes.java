@@ -21,5 +21,4 @@ public class TheRecipes extends AppCompatActivity {
             return insets;
         });
     }
-
 }

@@ -20,8 +20,17 @@ import com.example.rimasbiy.data.AppDatabase;
 import com.example.rimasbiy.userTable.Myuser;
 
 public class SignIn extends AppCompatActivity {
+    /**
+     * حقل ايميل
+     */
 private TextView tvAcount;
+/**
+ * حقل اسم المستخدم
+ */
 private EditText username;
+/**
+ * حقل كلمة المرور
+ */
 private EditText TextPassword;
 private Button btnLogin;
 private TextView orr;
@@ -64,6 +73,10 @@ private Button btnSignup;
         }
     });
     }
+    // explaination: validateFields() checks if the username and password fields are valid
+    // if either field is empty or does not match the required pattern, an error is set on the field
+    // and the flag is set to false, indicating that the fields are invalid
+    // if the fields are valid, a new Myuser object is created and the flag is set to true, indicating that the fields are valid
 private boolean validateFields(){
     boolean flag=true;
     String usernameText=username.getText().toString();

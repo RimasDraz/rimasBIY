@@ -15,17 +15,20 @@
         android:layout_height="236dp"
         app:srcCompat="@mipmap/ic_launcher"
         tools:layout_editor_absoluteX="132dp"
-        tools:layout_editor_absoluteY="152dp" />
+        tools:layout_editor_absoluteY="152dp"
+        tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/btnRe"
-        android:layout_width="506dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#62424A"
         android:text="The Recipes"
         android:textColorLink="#00E5FF"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="544dp" />
+        android:textSize="34sp"
+        tools:layout_editor_absoluteX="135dp"
+        tools:layout_editor_absoluteY="564dp"
+        tools:ignore="MissingConstraints" />
 
     <SearchView
         android:id="@+id/searchh"
@@ -33,18 +36,22 @@
         android:layout_height="wrap_content"
         android:background="#FFC9C9"
         android:backgroundTint="#62424A"
+        android:tooltipText="search"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="443dp" />
+        tools:layout_editor_absoluteY="443dp"
+        tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/btnFav"
-        android:layout_width="506dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#62424A"
         android:text="Favorites"
         android:textColorLink="#C17B7B"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="646dp" />
+        android:textSize="34sp"
+        tools:layout_editor_absoluteX="158dp"
+        tools:layout_editor_absoluteY="660dp"
+        tools:ignore="MissingConstraints" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/adFab"
@@ -53,7 +60,8 @@
         android:clickable="true"
         android:src="@android:drawable/ic_input_add"
         tools:layout_editor_absoluteX="434dp"
-        tools:layout_editor_absoluteY="826dp" />
+        tools:layout_editor_absoluteY="826dp"
+        tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/texthome"
@@ -63,5 +71,6 @@
         android:text="                 Home"
         android:textSize="48sp"
         tools:layout_editor_absoluteX="177dp"
-        tools:layout_editor_absoluteY="28dp" />
+        tools:layout_editor_absoluteY="28dp"
+        tools:ignore="MissingConstraints" />
 </androidx.constraintlayout.widget.ConstraintLayout>
