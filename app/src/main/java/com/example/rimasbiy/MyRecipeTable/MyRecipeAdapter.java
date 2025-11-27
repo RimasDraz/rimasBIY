@@ -36,7 +36,7 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
         ImageButton loveimageb=vitem.findViewById(R.id.loveimageb);
         ImageButton shareimageb=vitem.findViewById(R.id.shareimageb);
         EditText nameCake=vitem.findViewById(R.id.nameCake);
-        //
+        //jkjkj
         Recipe current=getItem(position);
         return vitem;
     }
