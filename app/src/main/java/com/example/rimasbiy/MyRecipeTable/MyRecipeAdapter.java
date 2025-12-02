@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +18,7 @@ import com.example.rimasbiy.userTable.Myuser;
 
 public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
     private final int recipeLayout;
+
 
     /**
      *العمل يبني الارتباط
@@ -32,12 +34,18 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
         View vitem= convertView;
         if (vitem==null)
             vitem= LayoutInflater.from(getContext()).inflate(recipeLayout,parent,false);
-        ImageView imageView=vitem.findViewById(R.id.cakeimg);
+        ImageView cakeimg=vitem.findViewById(R.id.cakeimg);
         ImageButton loveimageb=vitem.findViewById(R.id.loveimageb);
         ImageButton shareimageb=vitem.findViewById(R.id.shareimageb);
         EditText nameCake=vitem.findViewById(R.id.nameCake);
-        //jkjkj
+        TextView disText=vitem.findViewById(R.id.disText);
+
         Recipe current=getItem(position);
+        /**
+         * عرض المعطيات على حقول الرسم
+         */
+        nameCake.setText(current.getName());
+        disText.setText(current.getDescription());
         return vitem;
     }
 
