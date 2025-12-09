@@ -27,9 +27,7 @@ public class ListRecipes extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        lsViRecipes = findViewById(R.id.lsViRecipes);
-        adapter = new MyRecipeAdapter(this, R.layout.activity_list_recipes);
-        lsViRecipes.setAdapter(adapter);
+
 
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_list_recipes);
@@ -38,6 +36,9 @@ public class ListRecipes extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        lsViRecipes = findViewById(R.id.lsViRecipes);
+        adapter = new MyRecipeAdapter(this, R.layout.activity_list_recipes);
+        lsViRecipes.setAdapter(adapter);
         btnFav = findViewById(R.id.adFab);
         btnFav.setOnClickListener(new View.OnClickListener() {
             @Override
