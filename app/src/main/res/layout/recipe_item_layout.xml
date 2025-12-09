@@ -47,7 +47,7 @@
 
             <ImageButton
                 android:id="@+id/shareimageb"
-                android:layout_width="48dp"
+                android:layout_width="40dp"
                 android:layout_height="46dp"
                 tools:srcCompat="@tools:sample/avatars" />
 

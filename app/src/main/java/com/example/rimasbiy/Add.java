@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,7 +44,26 @@ public class Add extends AppCompatActivity {
         ingredients = findViewById(R.id.ingredients);
         instructions = findViewById(R.id.instructions);
         imagerecipe = findViewById(R.id.imagerecipe);
-
+        buttonsaverecipe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(validateFields()) {
+                    buttonsaverecipe.setEnabled(false);
+                    buttonsaverecipe.setText("Saving...");
+                    //postDelayed تشغل ثريد
+                    buttonsaverecipe.postDelayed(new Runnable() {
+                        // انه تشغيل مقطع كود بنفس الوقت مع ثريد ثاني وخاصة مع التطييق الخاصة بنا
+                        @Override
+                        public void run() {
+                            buttonsaverecipe.setEnabled(true);
+                            buttonsaverecipe.setText("Save");
+                            finish();
+                        }
+                        //تشغل ثريد لمدة 2ث
+                    }, 2000);
+                }
+            }
+        });
 
     }
     private boolean validateFields() {
@@ -85,11 +105,9 @@ public class Add extends AppCompatActivity {
          * ادخال البيانات في قاعدة البيانات
          */
         AppDatabase.getInstance(this).myRecipeQuery().insert(recipe);
+        Toast.makeText(this, "Recipe saved successfully", Toast.LENGTH_SHORT).show();
     }
         return flag;
     }
-    public void onClick(View view) {
-        Intent i=new Intent(Add.this, ListRecipes.class);
-        startActivity(i);
-    }
+
 }
