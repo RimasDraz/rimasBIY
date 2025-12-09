@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RimasBIY">
         <activity
-            android:name=".TheRecipes"
+            android:name=".ListRecipes"
             android:exported="false" />
         <activity
             android:name=".koko"

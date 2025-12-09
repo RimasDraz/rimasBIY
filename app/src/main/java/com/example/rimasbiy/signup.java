@@ -86,7 +86,7 @@ public class signup extends AppCompatActivity {
             public void onClick(View v) {
                if(validateFields())
                {
-                   Intent i=new Intent(signup.this, HomeScreen.class);
+                   Intent i=new Intent(signup.this, ListRecipes.class);
                    startActivity(i);
                }
                else {

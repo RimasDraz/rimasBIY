@@ -64,7 +64,7 @@ private Button btnSignup;
         public void onClick(View v) {
             if(validateFields())
             {
-                Intent i=new Intent(SignIn.this, HomeScreen.class);
+                Intent i=new Intent(SignIn.this, ListRecipes.class);
                 startActivity(i);
             }
             else {

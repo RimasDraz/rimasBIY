@@ -1,7 +1,9 @@
 package com.example.rimasbiy;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -13,14 +15,15 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.rimasbiy.MyRecipeTable.Recipe;
 import com.example.rimasbiy.data.AppDatabase;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class Add extends AppCompatActivity {
     private Button buttonsaverecipe;
-    private TextInputLayout recipename;
-    private TextInputLayout description;
-    private TextInputLayout ingredients;
-    private TextInputLayout instructions;
+    private TextInputEditText recipename;
+    private TextInputEditText description;
+    private TextInputEditText ingredients;
+    private TextInputEditText instructions;
     private ImageView imagerecipe;
 
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
@@ -29,11 +32,11 @@ public class Add extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_add);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+//            return insets;
+//        });
         buttonsaverecipe = findViewById(R.id.buttonsaverecipe);
         recipename = findViewById(R.id.recipename);
         description = findViewById(R.id.description);
@@ -46,34 +49,47 @@ public class Add extends AppCompatActivity {
     private boolean validateFields() {
         boolean flag = true;
 
-        if(recipename.getEditText().getText().toString().isEmpty() ) {
+        if(recipename.getText().toString().isEmpty() ) {
             recipename.setError("Invalid recipe name");
             flag = false;
         }
 
-        if(description.getEditText().getText().toString().isEmpty()) {
+        if(description.getText().toString().isEmpty()) {
             description.setError("Description is required");
             flag = false;
         }
 
-        if(ingredients.getEditText().getText().toString().isEmpty()) {
+        if(ingredients.getText().toString().isEmpty()) {
             ingredients.setError("Ingredients are required");
             flag = false;
         }
 
-        if(instructions.getEditText().getText().toString().isEmpty()) {
+        if(instructions.getText().toString().isEmpty()) {
             instructions.setError("Instructions are required");
             flag = false;
         }
     if(flag)
     {
+        /**
+        بناء كائن
+         */
         Recipe recipe = new Recipe();
-        recipe.setName(recipename.getEditText().getText().toString());
-        recipe.setDescription(description.getEditText().getText().toString());
-        recipe.setIngredients(ingredients.getEditText().getText().toString());
-        recipe.setInstructions(instructions.getEditText().getText().toString());
+        /**
+        *استخراج القيم من الصفات واعطائها للحقولا
+         */
+        recipe.setName(recipename.getText().toString());
+        recipe.setDescription(description.getText().toString());
+        recipe.setIngredients(ingredients.getText().toString());
+        recipe.setInstructions(instructions.getText().toString());
+        /**
+         * ادخال البيانات في قاعدة البيانات
+         */
         AppDatabase.getInstance(this).myRecipeQuery().insert(recipe);
     }
         return flag;
+    }
+    public void onClick(View view) {
+        Intent i=new Intent(Add.this, ListRecipes.class);
+        startActivity(i);
     }
 }
