@@ -14,9 +14,11 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.rimasbiy.MyRecipeTable.MyRecipeAdapter;
 import com.example.rimasbiy.MyRecipeTable.Recipe;
+import com.example.rimasbiy.data.AppDatabase;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ListRecipes extends AppCompatActivity {
   private   FloatingActionButton btnFav;
@@ -48,4 +50,17 @@ public class ListRecipes extends AppCompatActivity {
             }
         });
     }
+    //استخراج معطيات (حسب قاعدة البيانات وعرضها على listview)
+    protected void onResume() {
+        super.onResume();
+        //  ....استخراج جميع الوصفات
+        List<Recipe> recipes = AppDatabase.getInstance(this).myRecipeQuery().getAll();
+        // .... تنظيف المنسق من جميع المعطيات السابقة
+        adapter.clear();
+        //اضافة المعطيات الجديدة
+        adapter.addAll(recipes);
+        //.... تحديث المنسق الجديد
+        adapter.notifyDataSetChanged();
+    }
+
 }

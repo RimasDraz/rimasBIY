@@ -33,7 +33,7 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
     {
         View vitem= convertView;
         if (vitem==null)
-            vitem= LayoutInflater.from(getContext()).inflate(recipeLayout,parent,false);
+            vitem= LayoutInflater.from(getContext()).inflate(R.layout.recipe_item_layout,parent,false);
         ImageView cakeimg=vitem.findViewById(R.id.cakeimg);
         ImageButton loveimageb=vitem.findViewById(R.id.loveimageb);
         ImageButton shareimageb=vitem.findViewById(R.id.shareimageb);

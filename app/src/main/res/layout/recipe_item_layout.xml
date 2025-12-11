@@ -13,14 +13,14 @@
 
         <ImageView
             android:id="@+id/cakeimg"
-            android:layout_width="213dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_gravity="fill_vertical"
             android:layout_weight="1"
             tools:srcCompat="@tools:sample/avatars" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="245dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical">
@@ -47,7 +47,7 @@
 
             <ImageButton
                 android:id="@+id/shareimageb"
-                android:layout_width="40dp"
+                android:layout_width="108dp"
                 android:layout_height="46dp"
                 tools:srcCompat="@tools:sample/avatars" />
 
