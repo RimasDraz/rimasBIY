@@ -3,6 +3,10 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 
 import androidx.room.PrimaryKey;
+
+/**
+ *فئة تمثل وصفة
+ */
 @Entity
 public class Recipe {
     @PrimaryKey(autoGenerate = true)

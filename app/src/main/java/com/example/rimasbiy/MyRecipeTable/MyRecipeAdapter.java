@@ -18,8 +18,6 @@ import com.example.rimasbiy.userTable.Myuser;
 
 public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
     private final int recipeLayout;
-
-
     /**
      *العمل يبني الارتباط
      * @param context==> رابط بالسياق
