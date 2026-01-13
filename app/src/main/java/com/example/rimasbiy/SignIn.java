@@ -85,6 +85,7 @@ private boolean validateFields(){
     if(usernameText.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(usernameText).matches()){
         username.setError("Invalid username");
         flag=false;
+
     }
 
     if(passwordText.isEmpty() || passwordText.length()<8){

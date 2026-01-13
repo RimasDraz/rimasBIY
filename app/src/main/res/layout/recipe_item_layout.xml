@@ -13,24 +13,21 @@
 
         <ImageView
             android:id="@+id/cakeimg"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_gravity="fill_vertical"
             android:layout_weight="1"
             tools:srcCompat="@tools:sample/avatars" />
 
         <LinearLayout
-            android:layout_width="245dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical">
 
             <EditText
                 android:id="@+id/nameCake"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="text"
+                style="@android:style/Widget.AutoCompleteTextView"
                 android:text="Name" />
 
             <TextView
@@ -42,12 +39,12 @@
             <ImageButton
                 android:id="@+id/loveimageb"
                 android:layout_width="48dp"
-                android:layout_height="41dp"
+                android:layout_height="48dp"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <ImageButton
                 android:id="@+id/shareimageb"
-                android:layout_width="108dp"
+                android:layout_width="46dp"
                 android:layout_height="46dp"
                 tools:srcCompat="@tools:sample/avatars" />
 
