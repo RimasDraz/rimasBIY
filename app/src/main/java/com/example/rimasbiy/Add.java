@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,9 +34,10 @@ public class Add extends AppCompatActivity {
     private TextInputEditText description;
     private TextInputEditText ingredients;
     private TextInputEditText instructions;
-    private ImageView imagerecipe;//صفة كمؤشر لهذا الكائن
-    private Uri imagerecipeUri;//صقة لحفظ عنوان الصورة بعد اختيارها
-    private ActivityResultLauncher<String>pickimage;// كائن لطلب الصورة من الهاتف
+    private ImageView imagerecipe;
+   // private ImageView ivSelectedImage; //صفة كمؤشر لهذا الكائن
+    private Uri selectedImageUri;//صفة لحفظ عنوان الصورة بعد اختيارها
+    private ActivityResultLauncher<String> pickImage;// ‏كائن لطلب الصورة من الهاتف
     String TAG="FilePermission";
 
     // مُشغّلات لطلب الأذونات
@@ -49,11 +51,19 @@ public class Add extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_add);
+        buttonsaverecipe = findViewById(R.id.buttonsaverecipe);
+        recipename = findViewById(R.id.recipename);
+        description = findViewById(R.id.description);
+        ingredients = findViewById(R.id.ingredients);
+        instructions = findViewById(R.id.instructions);
+        imagerecipe = findViewById(R.id.imagerecipe);
+
+
 //        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
 //            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
 //            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
 //            return insets;
-        requestReadExternalStoragePermission=registerForActivityResult(new ActivityResultContracts.RequestPermission(),isGranted->
+        requestReadMediaImagesPermission=registerForActivityResult(new ActivityResultContracts.RequestPermission(),isGranted->
         {
 
             if (isGranted){
@@ -67,6 +77,7 @@ public class Add extends AppCompatActivity {
 
             }
         });
+
         requestReadMediaVideoPermission = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
             if (isGranted) {
                 Log.d(TAG, "READ_MEDIA_VIDEO permission granted");
@@ -87,6 +98,30 @@ public class Add extends AppCompatActivity {
                 // التعامل مع حالة رفض الإذن
             }
         });
+
+// Initialize the ActivityResultLauncher for picking images
+        pickImage = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
+            @Override
+            public void onActivityResult(Uri result) {
+                if (result != null) {
+                    selectedImageUri = result;
+                    imagerecipe.setImageURI(result);
+                    imagerecipe.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+
+        imagerecipe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pickImage.launch("image/*"); // Launch the image picker
+            }
+        });
+
+
+        checkAndRequestPermissions();
+
     }
 
 
@@ -144,12 +179,7 @@ public class Add extends AppCompatActivity {
             }
 
 //        });
-            buttonsaverecipe = findViewById(R.id.buttonsaverecipe);
-            recipename = findViewById(R.id.recipename);
-            description = findViewById(R.id.description);
-            ingredients = findViewById(R.id.ingredients);
-            instructions = findViewById(R.id.instructions);
-            imagerecipe = findViewById(R.id.imagerecipe);
+
             buttonsaverecipe.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

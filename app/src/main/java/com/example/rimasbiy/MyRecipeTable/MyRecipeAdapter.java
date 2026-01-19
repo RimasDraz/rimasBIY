@@ -15,6 +15,8 @@ import androidx.annotation.Nullable;
 
 import com.example.rimasbiy.R;
 import com.example.rimasbiy.userTable.Myuser;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textview.MaterialTextView;
 
 public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
     private final int recipeLayout;
@@ -33,9 +35,9 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
         if (vitem==null)
             vitem= LayoutInflater.from(getContext()).inflate(R.layout.recipe_item_layout,parent,false);
         ImageView cakeimg=vitem.findViewById(R.id.cakeimg);
-        ImageButton loveimageb=vitem.findViewById(R.id.loveimageb);
-        ImageButton shareimageb=vitem.findViewById(R.id.shareimageb);
-        EditText nameCake=vitem.findViewById(R.id.nameCake);
+        MaterialButton loveimageb=vitem.findViewById(R.id.loveimageb);
+        MaterialButton shareimageb=vitem.findViewById(R.id.shareimageb);
+        MaterialTextView nameCake=vitem.findViewById(R.id.nameCake);
         TextView disText=vitem.findViewById(R.id.disText);
 
         Recipe current=getItem(position);
