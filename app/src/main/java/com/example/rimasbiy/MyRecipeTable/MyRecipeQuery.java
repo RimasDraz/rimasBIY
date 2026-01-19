@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * واجهة استعلامات على جدول معطيات
  */
-@Dao
+@Dao //بوابة للتعامل مع قاعدة البيانات
 public interface MyRecipeQuery {
     /**
      * اعادة جميع معطيات جدول الوصفات
@@ -46,7 +46,6 @@ public interface MyRecipeQuery {
      */
     @Insert// لادخال البيانات
     void insertAll(Recipe... recipes);//ثلث نقاط تعني مجموعة
-
     /**
      * لاضافة وصفة او اكثر
      * @param recipe
@@ -65,9 +64,10 @@ public interface MyRecipeQuery {
      * حذف
      * @param recipe
      */
-    @Insert
+    @Insert //اضافة بيانات
     void insert(Recipe recipe);
-    @Update
+    @Update// تعديل بيانات موجودة في قاعدة البيانات بناءا على primary kiy
+    //اي تغير معلومات صف موجود دون اضافة ما تضيف صف جديد
     void update(Recipe...values);
     }
 
