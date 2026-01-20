@@ -1,5 +1,7 @@
 package com.example.rimasbiy;
 
+import static android.widget.Toast.LENGTH_SHORT;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -18,6 +21,10 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.rimasbiy.data.AppDatabase;
 import com.example.rimasbiy.userTable.Myuser;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class SignIn extends AppCompatActivity {
     /**
@@ -46,6 +53,14 @@ private Button btnSignup;
         Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
         v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
         return insets;});
+
+    FirebaseAuth auth=FirebaseAuth.getInstance();
+    if(auth.getCurrentUser()!=null)
+    {
+        Intent i= new Intent(SignIn.this,ListRecipes.class);
+        startActivity(i);
+    }
+
     tvAcount=findViewById(R.id.tvAcount);
     username=findViewById(R.id.username);
     TextPassword=findViewById(R.id.TextPassword);
@@ -62,14 +77,7 @@ private Button btnSignup;
     btnLogin.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(validateFields())
-            {
-                Intent i=new Intent(SignIn.this, ListRecipes.class);
-                startActivity(i);
-            }
-            else {
-                Toast.makeText(SignIn.this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
-            }
+            validateFields();
         }
     });
     }
@@ -98,6 +106,24 @@ private boolean validateFields(){
         myuser.setEmail(usernameText);
         myuser.setPassword(passwordText);
         AppDatabase.getInstance(SignIn.this).myuserQuery().insertAll(myuser);
+        //
+        FirebaseAuth auth=FirebaseAuth.getInstance();
+        //
+        auth.signInWithEmailAndPassword(usernameText,passwordText).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(SignIn.this,"Sining in Succeeded", LENGTH_SHORT).show();
+                    //
+                    Intent i=new Intent(SignIn.this, MainActivity.class);
+                    startActivity(i);
+                }
+                else{
+                    Toast.makeText(SignIn.this,"sining in failed", LENGTH_SHORT).show();
+                    username.setError(task.getException().getMessage());
+                }
+            }
+        });
     }
 
 

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -18,6 +19,10 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.rimasbiy.data.AppDatabase;
 import com.example.rimasbiy.userTable.Myuser;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -84,14 +89,15 @@ public class signup extends AppCompatActivity {
         btnsign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               if(validateFields())
-               {
-                   Intent i=new Intent(signup.this, ListRecipes.class);
-                   startActivity(i);
-               }
-               else {
-                   Toast.makeText(signup.this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
-               }
+                validateFields();
+//               if(validateFields())
+//               {
+//                   Intent i=new Intent(signup.this, ListRecipes.class);
+//                   startActivity(i);
+//               }
+//               else {
+//                   Toast.makeText(signup.this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
+//               }
             }
         });
     }
@@ -137,6 +143,22 @@ public class signup extends AppCompatActivity {
             myuser.setPhone(phone);
             myuser.setPassword(password);
             AppDatabase.getInstance(signup.this).myuserQuery().insertAll(myuser);
+            //كائن لعملية التسجيل
+            FirebaseAuth auth=FirebaseAuth.getInstance();
+            //انشاء حساب بواطسة الميل و السسما
+            auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override//الجواب
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if(task.isSuccessful()){//اذا العملية زبطت
+                        Toast.makeText(signup.this,"Signing up Succeeded",Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                    else{
+                        Toast.makeText(signup.this,"Sining up Failed",Toast.LENGTH_SHORT).show();//ظهور رسالة انه التسجيل خاطئ
+                        EmailText.setError(task.getException().getMessage());
+                    }
+                }
+            });
         }
 
         return flag;

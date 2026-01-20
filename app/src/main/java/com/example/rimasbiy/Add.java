@@ -1,6 +1,8 @@
 package com.example.rimasbiy;
 
 
+import static android.content.ContentValues.TAG;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,6 +19,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -25,8 +28,12 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.rimasbiy.MyRecipeTable.Recipe;
 import com.example.rimasbiy.data.AppDatabase;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class Add extends AppCompatActivity {
     private Button buttonsaverecipe;
@@ -158,12 +165,14 @@ public class Add extends AppCompatActivity {
                     recipe.setName(recipename.getText().toString());
                     recipe.setDescription(description.getText().toString());
                     recipe.setIngredients(ingredients.getText().toString());
-                    recipe.setInstructions(instructions.getText().toString());
+                    recipe.setInstructions      (instructions.getText().toString());
                     /**
                      * ادخال البيانات في قاعدة البيانات
                      */
                     AppDatabase.getInstance(this).myRecipeQuery().insert(recipe);
                     Toast.makeText(this, "Recipe saved successfully", Toast.LENGTH_SHORT).show();
+                    //save via frirebase database
+                    saveRecipe(recipe);
                 }
                 return flag;
             }
@@ -183,26 +192,58 @@ public class Add extends AppCompatActivity {
             buttonsaverecipe.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (validateFields()) {
-                        buttonsaverecipe.setEnabled(false);
-                        buttonsaverecipe.setText("Saving...");
-                        //postDelayed تشغل ثريد
-                        buttonsaverecipe.postDelayed(new Runnable() {
-                            // انه تشغيل مقطع كود بنفس الوقت مع ثريد ثاني وخاصة مع التطييق الخاصة بنا
-                            @Override
-                            public void run() {
-                                buttonsaverecipe.setEnabled(true);
-                                buttonsaverecipe.setText("Save");
-                                finish();
-                            }
-                            //تشغل ثريد لمدة 2ث
-                        }, 2000);
-                    }
+                    validateFields();
+//                    if (validateFields()) {
+//                        buttonsaverecipe.setEnabled(false);
+//                        buttonsaverecipe.setText("Saving...");
+//                        //postDelayed تشغل ثريد
+//                        buttonsaverecipe.postDelayed(new Runnable() {
+//                            // انه تشغيل مقطع كود بنفس الوقت مع ثريد ثاني وخاصة مع التطييق الخاصة بنا
+//                            @Override
+//                            public void run() {
+//                                buttonsaverecipe.setEnabled(true);
+//                                buttonsaverecipe.setText("Save");
+//                                finish();
+//                            }
+//                            //تشغل ثريد لمدة 2ث
+//                        }, 2000);
+//                    }
                 }
             });
-
         }
     }
+    public void saveRecipe(Recipe recipe) {//في قاعدة البيانات "recipe" الحصول على مرجع الى عقدة
+        //تهيئة  Firebase Realtime Database // مؤشر لقاعدة البيانات
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        //مؤشر لجدول الوصفات
+        DatabaseReference RecipesRef = database.child("users");
+        //انشاء مفتاح فريد للوصفة الجديدة
+        DatabaseReference newRecipeRef = RecipesRef.push();
+        //تعيين  معرف الوصفة في الكائن Recipe
+        recipe.setKey(newRecipeRef.getKey());
+        //حفظ بيانات الوصفة في قاعدة البيانات
+        //اضافة كائن "لمجموعة" الوصفات ومعالج حدث لفحص تجاح المطلوب
+        //مفالج حدث لحفص هل تم المطلوب من قاعدة البيانات
+        newRecipeRef.setValue(recipe).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(Add.this, "Succeeded to add recipe", Toast.LENGTH_SHORT).show();
+                        finish();
+                        //تم حفظ البيانات بنجاح
+                        Log.d(TAG, ":تم حفظ الوصفة بنجاح" + recipe.getId());
+                        //تحديث واجهة المستخدم او تنفيذ اجراءات اخرى
 
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //معالجة الاخطاء
+                        Log.e(TAG,"خطأ في حفظ الوصفة:"+e.getMessage(),e);
+                        Toast.makeText(Add.this,"failed to add Recipe",Toast.LENGTH_SHORT).show();
+                        //عرض رسالة خطأ للوصفة
+                    }
+                });
+    }
 
 }

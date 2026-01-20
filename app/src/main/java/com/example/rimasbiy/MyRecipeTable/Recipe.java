@@ -1,8 +1,20 @@
 package com.example.rimasbiy.MyRecipeTable;
+import static android.content.ContentValues.TAG;
+
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 
 import androidx.room.PrimaryKey;
+
+import com.example.rimasbiy.signup;
+import com.example.rimasbiy.userTable.Myuser;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  *فئة تمثل وصفة
@@ -16,6 +28,8 @@ public class Recipe {
     private String ingredients;
     private String instructions;
     private String image;
+    private String key;
+
     @NonNull
     @Override
     public String toString() {
@@ -26,6 +40,7 @@ public class Recipe {
                 ", ingredients='" + ingredients + '\'' +
                 ", instructions='" + instructions + '\'' +
                 ", image='" + image + '\'' +
+                ",key='"+ key+ '\''+
                 '}';
     }
 
@@ -76,4 +91,7 @@ public class Recipe {
     public void setImage(String image) {
         this.image = image;
     }
+
+    public String getKey(){return key;}
+   public void setKey(String key){ this.key=key;}
 }
