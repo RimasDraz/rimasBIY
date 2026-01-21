@@ -23,7 +23,7 @@
         android:id="@+id/textVi"
         android:layout_width="match_parent"
         android:layout_height="49dp"
-        android:text="User name / E-mail"
+        android:text="E-mail"
         android:textColor="@color/black"
         android:textSize="20sp" />
 
@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="71dp"
         android:ems="10"
-        android:hint="User name/ E-mail"
+        android:hint="E-mail"
         android:inputType="text"
         android:textColor="@color/black" />
 
