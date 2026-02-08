@@ -16,7 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ImageView imgsplash;
+    private ImageView imgsplash;//صورة الخلفية
 
 
 

@@ -38,7 +38,7 @@ public class signup extends AppCompatActivity {
      */
     private EditText TextPassword;
     /**
-     * حقل الكلمة السر
+     * حقل كلمة السر
      */
     private  EditText TextPasswordd;
     /**
@@ -48,11 +48,11 @@ public class signup extends AppCompatActivity {
     /**
      * زر التسجيل
      */
-    private TextView textup;
-    private TextView textVPP;
-    private TextView textVP;
-    private TextView textVE;
-    private TextView textVPH;
+    private TextView textup;//Creat an account now!
+    private TextView textVPP;//Confirm passwor
+    private TextView textVP;//password
+    private TextView textVE;//E-mail
+    private TextView textVPH;//phone
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -160,7 +160,6 @@ public class signup extends AppCompatActivity {
                 }
             });
         }
-
         return flag;
     }
 

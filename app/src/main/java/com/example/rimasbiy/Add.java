@@ -37,14 +37,15 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class Add extends AppCompatActivity {
     private Button buttonsaverecipe;
-    private TextInputEditText recipename;
-    private TextInputEditText description;
-    private TextInputEditText ingredients;
-    private TextInputEditText instructions;
-    private ImageView imagerecipe;
+    private TextInputEditText recipename; // اسم الوصفة
+    private TextInputEditText description; // وصف للوصفة
+    private TextInputEditText ingredients;// مكونات
+    private TextInputEditText instructions;// تعليمات
+    private ImageView imagerecipe; // صورة الوصفة
    // private ImageView ivSelectedImage; //صفة كمؤشر لهذا الكائن
     private Uri selectedImageUri;//صفة لحفظ عنوان الصورة بعد اختيارها
     private ActivityResultLauncher<String> pickImage;// ‏كائن لطلب الصورة من الهاتف
+    private Button button_select_image;// لاختيار الصورة
     String TAG="FilePermission";
 
     // مُشغّلات لطلب الأذونات
@@ -64,6 +65,7 @@ public class Add extends AppCompatActivity {
         ingredients = findViewById(R.id.ingredients);
         instructions = findViewById(R.id.instructions);
         imagerecipe = findViewById(R.id.imagerecipe);
+        button_select_image=findViewById(R.id.button_select_image);
 
 
 //        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -215,7 +217,7 @@ public class Add extends AppCompatActivity {
     public void saveRecipe(Recipe recipe) {//في قاعدة البيانات "recipe" الحصول على مرجع الى عقدة
         //تهيئة  Firebase Realtime Database // مؤشر لقاعدة البيانات
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-        //مؤشر لجدول الوصفات
+        //مؤشر لجدول الوهصفات
         DatabaseReference RecipesRef = database.child("users");
         //انشاء مفتاح فريد للوصفة الجديدة
         DatabaseReference newRecipeRef = RecipesRef.push();

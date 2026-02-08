@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListRecipes extends AppCompatActivity {
-  private   FloatingActionButton btnFav;
-  private ListView lsViRecipes;
+  private   FloatingActionButton btnFav; // زر الاضافة
+  private ListView lsViRecipes;// القائمة
   private MyRecipeAdapter adapter;
 
     @SuppressLint("MissingInflatedId")

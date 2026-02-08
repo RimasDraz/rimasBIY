@@ -27,12 +27,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class SignIn extends AppCompatActivity {
-    /**
-     * حقل ايميل
-     */
-private TextView tvAcount;
+private TextView tvAcount;// Have an account?
 /**
- * حقل اسم المستخدم
+ * حقل الايميل
  */
 private EditText username;
 /**
@@ -42,6 +39,10 @@ private EditText TextPassword;
 private Button btnLogin;
 private TextView orr;
 private Button btnSignup;
+private TextView textVi;//E-mail
+ private TextView textV;//password
+
+
 
 @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -106,16 +107,16 @@ private boolean validateFields(){
         myuser.setEmail(usernameText);
         myuser.setPassword(passwordText);
         AppDatabase.getInstance(SignIn.this).myuserQuery().insertAll(myuser);
-        //
+        //كائن لعملية التسجيل
         FirebaseAuth auth=FirebaseAuth.getInstance();
-        //
+        //الدخول بمساعدة الايميل والسسما
         auth.signInWithEmailAndPassword(usernameText,passwordText).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     Toast.makeText(SignIn.this,"Sining in Succeeded", LENGTH_SHORT).show();
-                    //
-                    Intent i=new Intent(SignIn.this, MainActivity.class);
+                    //الانتقال للصفحة الرئيسية
+                    Intent i=new Intent(SignIn.this,ListRecipes.class);
                     startActivity(i);
                 }
                 else{

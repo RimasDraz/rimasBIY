@@ -25,10 +25,10 @@ public class Recipe {
     private int id;
     private String name;
     private String description;
-    private String ingredients;
-    private String instructions;
-    private String image;
-    private String key;
+    private String ingredients;//مكونات
+    private String instructions;// تعليمات
+    private String image;// صورة الوصفة
+    private String key;//المعرف الفريد الخاص بـ Firebase لربط الكائن المحلي بالسحابي
 
     @NonNull
     @Override
