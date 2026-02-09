@@ -27,9 +27,9 @@ import kotlin.coroutines.EmptyCoroutineContext;
 
 public class GeminiHelper {
     // استخدم اسم الموديل الصحيح
-    public static final String GEMINI_VERSION = "gemini-1.5-flash"; 
+    public static final String GEMINI_VERSION = "gemini-1.5-flash";
     private static final String GEMINI_API_KEY = "AIzaSyDO23pJ2gUnRvlAhkoQhOw3HACFUCQsEHc";
-    
+
     private static GeminiHelper instance;
     private final GenerativeModelFutures model;
     private final Executor executor;
@@ -74,39 +74,4 @@ public class GeminiHelper {
             }
         }, executor);
     }
-/**
- * ‏دالة للتعامل مع خدمة الذكاء الاصطناعي بعد إرسال صورة ونص خاص بهذه الصورة
- *
- * @param prompt   Gemini نص الاستعلام لخدمة الذكاء الاصطناعي
- * @param photo    Gemini الصورة التي نود إرسالها لخدمة الذكاء الاصطناعي
- * @param callback كائن لمعالجة رد خدمة الذكاء الاصطناعي Gemini
- */
-        public void sendMessageWithPhoto(String prompt, Bitmap photo, ResponseCallback callback) {
-            List<Part> parts = new ArrayList<Part>();
-            parts.add(new TextPart(prompt));
-            parts.add(new ImagePart(photo));
-            Content[] content = new Content[1];
-            content[0] = new Content(parts);
-
-
-            gemini.generateContent(content,
-                    new Continuation<GenerateContentResponse>() {
-                        @NonNull
-                        @Override
-                        public CoroutineContext getContext() {
-                            return EmptyCoroutineContext.INSTANCE;
-                        }
-
-
-                        @Override
-                        public void resumeWith(@NonNull Object result) {
-                            if (result instanceof Result.Failure) {
-                                callback.onError(((Result.Failure) result).exception);
-                            } else {
-                                callback.onResponse(((GenerateContentResponse) result).getText());
-                            }
-                        }
-                    }
-            );
-        }
-    }
+}
