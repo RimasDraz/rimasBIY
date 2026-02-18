@@ -25,6 +25,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+//import com.google.android.gms.tasks.OnCompleteListener;
+//import com.google.android.gms.tasks.Task;
+//import com.google.firebase.auth.AuthResult;
+//import com.google.firebase.auth.FirebaseAuth;
 
 public class SignIn extends AppCompatActivity {
 private TextView tvAcount;// Have an account?
@@ -55,12 +59,12 @@ private TextView textVi;//E-mail
         v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
         return insets;});
 
-    FirebaseAuth auth=FirebaseAuth.getInstance();
-    if(auth.getCurrentUser()!=null)
-    {
-        Intent i= new Intent(SignIn.this,ListRecipes.class);
-        startActivity(i);
-    }
+//    FirebaseAuth auth=FirebaseAuth.getInstance();
+//    if(auth.getCurrentUser()!=null)
+//    {
+//        Intent i= new Intent(SignIn.this,ListRecipes.class);
+//        startActivity(i);
+//    }
 
     tvAcount=findViewById(R.id.tvAcount);
     username=findViewById(R.id.username);

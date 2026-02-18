@@ -11,14 +11,14 @@ import androidx.room.PrimaryKey;
 
 import com.example.rimasbiy.signup;
 import com.example.rimasbiy.userTable.Myuser;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+//import com.google.android.gms.tasks.OnFailureListener;
+//import com.google.android.gms.tasks.OnSuccessListener;
+//import com.google.firebase.database.DatabaseReference;
+//import com.google.firebase.database.FirebaseDatabase;
 
-/**
- *فئة تمثل وصفة
- */
+ /**
+ *  *فئة تمثل وصفة
+ *  */
 @Entity
 public class Recipe {
     @PrimaryKey(autoGenerate = true)

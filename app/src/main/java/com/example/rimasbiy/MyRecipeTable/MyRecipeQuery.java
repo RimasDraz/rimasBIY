@@ -11,7 +11,6 @@ import java.util.List;
  * @param  توثيق 1-الدالة
  *               2-تسهيل الفهم
  */
-
 /**
  * واجهة استعلامات على جدول معطيات
  */
@@ -23,7 +22,6 @@ public interface MyRecipeQuery {
      */
     @Query("SELECT * FROM Recipe")
     List<Recipe> getAll();
-
     /**
      * ارجاع الوصفات من جدول Recipe
      * تستخدم لما بدي اعرض كل الوصفات بالتطبيق
