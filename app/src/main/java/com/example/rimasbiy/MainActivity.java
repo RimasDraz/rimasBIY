@@ -18,8 +18,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView imgsplash;//صورة الخلفية
 
-
-
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {

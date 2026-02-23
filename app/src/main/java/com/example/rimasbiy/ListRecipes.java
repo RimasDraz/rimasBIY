@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -16,6 +18,11 @@ import com.example.rimasbiy.MyRecipeTable.MyRecipeAdapter;
 import com.example.rimasbiy.MyRecipeTable.Recipe;
 import com.example.rimasbiy.data.AppDatabase;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +58,7 @@ public class ListRecipes extends AppCompatActivity {
         });
     }
     //استخراج معطيات (حسب قاعدة البيانات وعرضها على listview)
+    //استخدمناها لضمان تحديث البيانات (Refreshing) تلقائيا
     protected void onResume() {
         super.onResume();
         //  ....استخراج جميع الوصفات
@@ -62,5 +70,28 @@ public class ListRecipes extends AppCompatActivity {
         //.... تحديث المنسق الجديد
         adapter.notifyDataSetChanged();
     }
-
+    private void getAllFromFirebase( MyRecipeAdapter adapter) {
+        //عنوان قاعدة البيانات
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        // عنوان مجموعة المعطيات داخل قاعدة البيانات
+        DatabaseReference myRef = database.getReference("tasks");
+//إضافة listener مما يسبب الإصغاء لكل تغيير حتلنة عرض المعطيات//
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override//دالة معالج حدث تقوم بتلقى نسخة عن كل المعطيات عند أي تغيير
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                adapter.clear();//حذف كل المعطيات بالوسيط
+                for (DataSnapshot taskSnapshot : snapshot.getChildren()) {
+                    //  استخراج كل المعطيات على وتحويلها لكائن ملائم//
+                    Recipe recipe = taskSnapshot.getValue(Recipe.class);
+                    adapter.add(recipe);//اضافة كل معطى (كائن) للمنسق
+                }
+                adapter.notifyDataSetChanged();//اعلام المنسق بالتغيير
+                Toast.makeText(ListRecipes.this, "Data fetched successfully", Toast.LENGTH_SHORT).show();
+            }
+            @Override//بحالة فشل استخراج المعطيات
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(ListRecipes.this, "Failed to fetch data", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

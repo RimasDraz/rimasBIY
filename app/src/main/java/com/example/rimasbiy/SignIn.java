@@ -46,8 +46,6 @@ private Button btnSignup;
 private TextView textVi;//E-mail
  private TextView textV;//password
 
-
-
 @Override
     protected void onCreate(Bundle savedInstanceState)
 {
@@ -130,9 +128,6 @@ private boolean validateFields(){
             }
         });
     }
-
-
     return flag;
 }
-
 }

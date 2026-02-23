@@ -178,13 +178,13 @@ public class Add extends AppCompatActivity {
                     AppDatabase.getInstance(this).myRecipeQuery().insert(recipe);
                     Toast.makeText(this, "Recipe saved successfully", Toast.LENGTH_SHORT).show();
                     //save via frirebase database
-                   // saveRecipe(recipe);
+                   saveRecipe(recipe);
                 }
                 return flag;
             }
     private void checkAndRequestPermissions() {
         // فحص وطلب إذن READ_MEDIA_IMAGES (للإصدارات الحديثة)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // أندرويد 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_MEDIA_IMAGES)
                     != PackageManager.PERMISSION_GRANTED) {
                 requestReadMediaImagesPermission.launch(android.Manifest.permission.READ_MEDIA_IMAGES);
