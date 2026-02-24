@@ -37,7 +37,6 @@ public interface MyRecipeQuery {
      */
     @Query("SELECT * FROM Recipe WHERE name = :name")
     Recipe findByName(String name);
-
     /**
      * ارجاع الوصفة حسب الاسم
      * @param recipes
@@ -50,7 +49,6 @@ public interface MyRecipeQuery {
      */
     @Delete
     void delete (Recipe recipe);
-
     /**
      * حذف الوصفة
      * @param id
@@ -59,10 +57,10 @@ public interface MyRecipeQuery {
     void delete(int id);
 
     /**
-     * حذف
+     * حذف عن طريق الid
      * @param recipe
      */
-    @Insert //اضافة بيانات
+    @Insert //اضافة بيانات لوصفة
     void insert(Recipe recipe);
     @Update// تعديل بيانات موجودة في قاعدة البيانات بناءا على primary kiy
     //اي تغير معلومات صف موجود دون اضافة ما تضيف صف جديد

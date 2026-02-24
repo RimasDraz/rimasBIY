@@ -20,16 +20,17 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("MissingInflatedId")
     @Override
+    //بتشتغل أول ما يفتح التطبيق
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);//عرض صورة الخلفية (Splash)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        final Handler handler = new Handler();
+        final Handler handler = new Handler();//تنفيذ كود بعد مدة زمنية معينة
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
