@@ -56,16 +56,17 @@ public class signup extends AppCompatActivity {
 
     @SuppressLint("MissingInflatedId")
     @Override
+    //بتشتغل أول ما تفتح شاشة التسجيل
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_signup);
+        setContentView(R.layout.activity_signup);//تحديد ملف التننسيق للشاشة, بناء الكائنات
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;});
-
+//هون عم نربط عناصر الواجهة (EditText, Button...) بالكود عشان نقدر نتحكم فيهم
         EmailText=findViewById(R.id.EmailText);
         TextPhone=findViewById(R.id.TextPhone);
         TextPassword=findViewById(R.id.TextPassword);
@@ -142,13 +143,14 @@ public class signup extends AppCompatActivity {
             myuser.setEmail(email);
             myuser.setPhone(phone);
             myuser.setPassword(password);
+            //حفظ في قاعدة البيانات
             AppDatabase.getInstance(signup.this).myuserQuery().insertAll(myuser);
             //كائن لعملية التسجيل
             FirebaseAuth auth=FirebaseAuth.getInstance();
-            //انشاء حساب بواطسة الميل و السسما
-            auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override//الجواب
-                public void onComplete(@NonNull Task<AuthResult> task) {
+            // في firebase انشاء حساب بواسطة الميل و السسما
+            auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {//
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {//الجواب
                     if(task.isSuccessful()){//اذا العملية زبطت
                         Toast.makeText(signup.this,"Signing up Succeeded",Toast.LENGTH_SHORT).show();
                         finish();
@@ -161,6 +163,6 @@ public class signup extends AppCompatActivity {
             });
         }
         return flag;
-    }
+    } 
 
 }

@@ -22,7 +22,7 @@ public interface MyuserQuery {  //استخراج جميع المستعملين
     @Query("SELECT * FROM myuser WHERE email = :email AND password = :password")
     Myuser checkEmailPassw(String email,String password);
     //فحص هل الايميل موجود من قبل
-    @Query("SELECT * FROM myuser WHERE email = :email")
+    @Query("SELECT * FROM myuser WHERE email = :email") // هدف الجملة هو استخراج جميع معطيات المستعل الذي ايميله يشبهemail من الجدول myuser
     Myuser checkEmail(String email);
     //اضافة مستعمل او مجموعة مستعملين
     @Insert

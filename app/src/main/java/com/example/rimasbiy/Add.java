@@ -59,11 +59,11 @@ public class Add extends AppCompatActivity {
 
     @SuppressLint({"MissingInflatedId", "WrongViewCast", "RestrictedApi"})
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {//هاي أول دالة بتشتغل لما تنفتح شاشة إضافة وصفة
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_add);
-        buttonsaverecipe = findViewById(R.id.buttonsaverecipe);
+        setContentView(R.layout.activity_add);//تحديد ملف التننسيق للشاشة, بناء الكائنات,
+        buttonsaverecipe = findViewById(R.id.buttonsaverecipe);// البحث عن العنصر الذي يحمل المعرف IDالمسمى buttonsaverecipe في ملف التصميم وربطه بالمتغير البرمجيbuttonsaverecipe
         recipename = findViewById(R.id.recipename);
         description = findViewById(R.id.description);
         ingredients = findViewById(R.id.ingredients);
@@ -76,6 +76,9 @@ public class Add extends AppCompatActivity {
 //            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
 //            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
 //            return insets;
+        //تسجيل طلب الأذونات دالة بتجهز كائن عشان:
+        //يطلب إذن قراءة الصور
+       //ويتأكد إذا المستخدم وافق أو رفض
         requestReadMediaImagesPermission=registerForActivityResult(new ActivityResultContracts.RequestPermission(),isGranted->
         {
 
@@ -90,7 +93,8 @@ public class Add extends AppCompatActivity {
 
             }
         });
-
+//دالة مسؤولة عن: فتح معرض الصور
+// لما المستخدم يختار صورة:  تخزن الرابط فيselectedImageUri تعرض الصورة في  ImageView
         requestReadMediaVideoPermission = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
             if (isGranted) {
                 Log.d(TAG, "READ_MEDIA_VIDEO permission granted");
@@ -125,19 +129,18 @@ public class Add extends AppCompatActivity {
         });
 
 
-        imagerecipe.setOnClickListener(new View.OnClickListener() {
+        imagerecipe.setOnClickListener(new View.OnClickListener() {//لما ينكبس على الـ ImageView نفّذ الكود اللي جواته
             @Override
-            public void onClick(View v) {
-                pickImage.launch("image/*"); // Launch the image picker
+            public void onClick(View v) {//هاي الدالة اللي بتشتغل عند الضغط.
+                pickImage.launch("image/*"); // Launch the image picker(اختار أي نوع ملف من نوع صورة/*)
             }
         });
 
 
-        checkAndRequestPermissions();
+        checkAndRequestPermissions();//استدعاء دالة الأذونات
 
     }
-
-
+//فحص إذا كل الحقول معبّاية.
             private boolean validateFields () {
                 boolean flag = true;
 
@@ -164,11 +167,11 @@ public class Add extends AppCompatActivity {
                     /**
                      بناء كائن
                      */
-                    Recipe recipe = new Recipe();
+                    Recipe recipe = new Recipe();//إنشاء كائن Recipe
                     /**
                      *استخراج القيم من الصفات واعطائها للحقولا
                      */
-                    recipe.setName(recipename.getText().toString());
+                    recipe.setName(recipename.getText().toString());//عبي القيم داخله
                     recipe.setDescription(description.getText().toString());
                     recipe.setIngredients(ingredients.getText().toString());
                     recipe.setInstructions      (instructions.getText().toString());
@@ -182,8 +185,10 @@ public class Add extends AppCompatActivity {
                 }
                 return flag;
             }
-    private void checkAndRequestPermissions() {
+    private void checkAndRequestPermissions() {//تفحص إذا التطبيق عنده إذن قراءة الصور
         // فحص وطلب إذن READ_MEDIA_IMAGES (للإصدارات الحديثة)
+        //إذا الإذن مش موجود → تطلبه
+        //إذا موجود → تطبع رسالة إنه موجود
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_MEDIA_IMAGES)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -218,18 +223,19 @@ public class Add extends AppCompatActivity {
             });
         }
     }
+    //حفظ الوصفة في Firebase Realtime Database
     public void saveRecipe(Recipe recipe) {//في قاعدة البيانات "recipe" الحصول على مرجع الى عقدة
         //تهيئة  Firebase Realtime Database // مؤشر لقاعدة البيانات
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-        //مؤشر لجدول الوهصفات
-        DatabaseReference RecipesRef = database.child("users");
+        //مؤشر لجدول الوصفات
+        DatabaseReference RecipesRef = database.child("recipes");// يمثل مؤشرا او مرحعا لمسار محدد في شجرة البيانات
         //انشاء مفتاح فريد للوصفة الجديدة
         DatabaseReference newRecipeRef = RecipesRef.push();
         //تعيين  معرف الوصفة في الكائن Recipe
         recipe.setKey(newRecipeRef.getKey());
         //حفظ بيانات الوصفة في قاعدة البيانات
         //اضافة كائن "لمجموعة" الوصفات ومعالج حدث لفحص تجاح المطلوب
-        //مفالج حدث لحفص هل تم المطلوب من قاعدة البيانات
+        //معالج حدث لحفص هل تم المطلوب من قاعدة البيانات
         newRecipeRef.setValue(recipe).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {

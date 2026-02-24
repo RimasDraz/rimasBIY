@@ -47,11 +47,11 @@ private TextView textVi;//E-mail
  private TextView textV;//password
 
 @Override
-    protected void onCreate(Bundle savedInstanceState)
+    protected void onCreate(Bundle savedInstanceState)//بتشتغل أول ما الشاشة تفتح ,بتربط كلاس SignIn مع ملف XML تبع الواجهة.
 {
     super.onCreate(savedInstanceState);
     EdgeToEdge.enable(this);
-    setContentView(R.layout.activity_sign_in);
+    setContentView(R.layout.activity_sign_in);//تحديد ملف التننسيق للشاشة, بناء الكائنات
     ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
         Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
         v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -63,14 +63,14 @@ private TextView textVi;//E-mail
 //        Intent i= new Intent(SignIn.this,ListRecipes.class);
 //        startActivity(i);
 //    }
-
+//هون عم نربط عناصر الواجهة (EditText, Button...) بالكود عشان نقدر نتحكم فيهم
     tvAcount=findViewById(R.id.tvAcount);
     username=findViewById(R.id.username);
     TextPassword=findViewById(R.id.TextPassword);
     btnLogin=findViewById(R.id.btnLogin);
     btnSignup=findViewById(R.id.btnSignup);
 
-    btnSignup.setOnClickListener(new View.OnClickListener() {
+    btnSignup.setOnClickListener(new View.OnClickListener() {// هون الانتقال بيصير من: SignIn ➜ signup لما المستخدم يضغط زر التسجيل
         @Override
         public void onClick(View v) {
             Intent i=new Intent(SignIn.this, signup.class);
@@ -79,7 +79,7 @@ private TextView textVi;//E-mail
     });
     btnLogin.setOnClickListener(new View.OnClickListener() {
         @Override
-        public void onClick(View v) {
+        public void onClick(View v) {//  هون الانتقال بيصير من: SignIn ➜ ListRecipes اذا التسجيل نجح
             validateFields();
         }
     });
@@ -88,8 +88,8 @@ private TextView textVi;//E-mail
     // if either field is empty or does not match the required pattern, an error is set on the field
     // and the flag is set to false, indicating that the fields are invalid
     // if the fields are valid, a new Myuser object is created and the flag is set to true, indicating that the fields are valid
-private boolean validateFields(){
-    boolean flag=true;
+private boolean validateFields(){ // بتفحص اذا الباسورد والايميل وبترجعىtrue إذا كلشي تمام false إذا في خطأ
+    boolean flag=true;//المتغير بيحدد إذا البيانات صحيحة أو لا.
     String usernameText=username.getText().toString();
     String passwordText=TextPassword.getText().toString();
 
@@ -105,15 +105,18 @@ private boolean validateFields(){
     }
     if(flag)
     {
+        //إنشاء كائن Myuser
         Myuser myuser = new Myuser();
         myuser.setEmail(usernameText);
         myuser.setPassword(passwordText);
-        AppDatabase.getInstance(SignIn.this).myuserQuery().insertAll(myuser);
+        AppDatabase.getInstance(SignIn.this).myuserQuery().insertAll(myuser);//حفظه بقاعدة البيانات
         //كائن لعملية التسجيل
         FirebaseAuth auth=FirebaseAuth.getInstance();
         //الدخول بمساعدة الايميل والسسما
-        auth.signInWithEmailAndPassword(usernameText,passwordText).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
+        auth.signInWithEmailAndPassword(usernameText,passwordText).addOnCompleteListener(new OnCompleteListener<AuthResult>(){
+           //تستنى Firebase يخلص عملية تسجيل الدخول وبعدها بتنفذ الكود الي جواaddOnCompleteListener
+           @Override
+           //هاي دالة بتشتغل لما Firebase يخلص عملية تسجيل الدخول
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     Toast.makeText(SignIn.this,"Sining in Succeeded", LENGTH_SHORT).show();

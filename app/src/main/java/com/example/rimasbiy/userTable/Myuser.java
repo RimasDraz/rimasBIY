@@ -8,11 +8,10 @@ import androidx.room.PrimaryKey;
 /**
  * فئة تمثل المستعمل
  */
-
 @Entity
 public class Myuser {
     @PrimaryKey(autoGenerate = true)//تحديد الصفة كمفتاح رئيسي والذي يُنتجح بشكل تلقائي
-    public long keyid;
+    public long keyid;// مفتاح رئيسي مع قيم تلقائية
     @ColumnInfo(name = "id")//اعطاء اسم جديد للعامود-الصفة في الجدول
     private int id;
     private String phone;//رقم الهاتف
