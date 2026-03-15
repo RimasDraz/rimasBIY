@@ -1,7 +1,11 @@
 package com.example.rimasbiy;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static java.security.AccessController.getContext;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
@@ -50,7 +54,7 @@ public class ListRecipes extends AppCompatActivity {
         lsViRecipes.setAdapter(adapter);                                           //ربطه  بالlistview
 //هون عم نربط عناصر الواجهة (EditText, Button...) بالكود عشان نقدر نتحكم فيهم
         btnFav = findViewById(R.id.adFab);
-        btnFav.setOnClickListener(new View.OnClickListener() {
+        btnFav.setOnClickListener(new View.OnClickListener() {//هذا السطر يقوم بربط حدث النقر (Click Event) بالزر btnFav. عند ضغط المستخدم على الزر، يتم تنفيذ الكود الموجود داخل الدالة onClick().
             @Override
             public void onClick(View v) {//لما نضغطه ➜ ننتقل لشاشة Add
                 Intent i = new Intent(ListRecipes.this, Add.class);
@@ -98,4 +102,11 @@ public class ListRecipes extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     *  פתיחת אפליקצית שליחת sms
+     * @param msg .. ההודעה שרוצים לשלוח
+     * @param phone
+     */
+
 }

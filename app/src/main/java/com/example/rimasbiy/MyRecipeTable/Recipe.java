@@ -19,7 +19,7 @@ import com.example.rimasbiy.userTable.Myuser;
  /**
  *  *فئة تمثل وصفة
  *  */
-@Entity
+@Entity//تحديد الفئة كجدول قاعدة البيانات وجدول الي منرتيب فيه المعطيات
 public class Recipe {
     @PrimaryKey(autoGenerate = true)
     private int id;

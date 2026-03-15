@@ -199,7 +199,7 @@ public class Add extends AppCompatActivity {
             }
 
 //        });
-
+//بنخليه يراقب العنصر، وأول ما المستخدم يضغط → ينفّذ كود معيّن.
             buttonsaverecipe.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

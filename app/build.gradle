@@ -28,7 +28,10 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
 }
-
+//Gradle هو نظام بناء وإدارة يعتمد عليه Android Studio لتنظيم المشروع، تحميل المكتبات، ترجمة الكود، وتجهيز التطبيق للتشغيل أو النشر.
+//الكود
+//المكتبات
+//إعدادات التطبيق
 dependencies {
     implementation libs.appcompat
     implementation libs.material
