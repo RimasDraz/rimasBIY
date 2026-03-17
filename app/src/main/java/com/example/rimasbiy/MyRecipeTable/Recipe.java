@@ -11,6 +11,8 @@ import androidx.room.PrimaryKey;
 
 import com.example.rimasbiy.signup;
 import com.example.rimasbiy.userTable.Myuser;
+
+import java.io.Serializable;
 //import com.google.android.gms.tasks.OnFailureListener;
 //import com.google.android.gms.tasks.OnSuccessListener;
 //import com.google.firebase.database.DatabaseReference;
@@ -20,7 +22,7 @@ import com.example.rimasbiy.userTable.Myuser;
  *  *فئة تمثل وصفة
  *  */
 @Entity//تحديد الفئة كجدول قاعدة البيانات وجدول الي منرتيب فيه المعطيات
-public class Recipe {
+public class Recipe implements Serializable {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private String name;

@@ -30,6 +30,7 @@ import com.example.rimasbiy.MyRecipeTable.Recipe;
 import com.example.rimasbiy.data.AppDatabase;
 //import com.google.android.gms.tasks.OnFailureListener;
 //import com.google.android.gms.tasks.OnSuccessListener;
+import com.example.rimasbiy.userTable.MyService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
@@ -181,7 +182,9 @@ public class Add extends AppCompatActivity {
                     AppDatabase.getInstance(this).myRecipeQuery().insert(recipe);
                     Toast.makeText(this, "Recipe saved successfully", Toast.LENGTH_SHORT).show();
                     //save via frirebase database
-                   saveRecipe(recipe);
+                   //saveRecipe(recipe);
+                    Intent serviceIntent=new Intent(this, MyService.class);
+                    serviceIntent.putExtra("recipe_extra",recipe);
                 }
                 return flag;
             }

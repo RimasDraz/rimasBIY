@@ -4,6 +4,9 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 import static androidx.core.app.ActivityCompat.requestPermissions;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
+import static androidx.core.content.ContextCompat.startActivity;
+
+import static java.nio.file.Files.delete;
 
 import android.Manifest;
 import android.app.Activity;
@@ -12,6 +15,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.PointerIcon;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,13 +31,38 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.PermissionChecker;
 
+import com.example.rimasbiy.ListRecipes;
 import com.example.rimasbiy.R;
 import com.example.rimasbiy.userTable.Myuser;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.auth.FirebaseAuth;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+// مكتبات معالجة الصور
+import com.squareup.picasso.Picasso;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+// مكتبات Firebase Storage (للملفات والصور)
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+
+// مكتبات معالجة الأحداث والنجاح/الفشل
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnFailureListener;
+
+// مكتبات الملفات والنظام
+import java.io.File;
+import java.io.IOException;
 
 public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
     private final int recipeLayout;
@@ -63,20 +92,17 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
          */
         nameCake.setText(current.getName());//عرض البيانات
         disText.setText(current.getDescription());
-        return vitem;//رجّع العنصر
         //لسطر الواحد في الـ ListView --> الvitem
         //يعني الشكل اللي بيمثل وصفة وحدة (اسم + وصف + صورة)
 
         shareimageb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openSendSmsApp(current.get,"");// אם יש טלפון המשימה מעבירים במקום ה ״״
+                openSendSmsApp(current.getName(),"");// אם יש טלפון המשימה מעבירים במקום ה ״״
             }
         });
-
-
+        return vitem;//رجّع العنصر
     }
-
     /**
      *  פתיחת אפליקצית שליחת sms
      * @param msg .. ההודעה שרוצים לשלוח
@@ -122,8 +148,6 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
 
     /**
      * ביצוע שיחה למפסר טלפון
-     * todo הוספת הרשאה בקובץ המניפיסט
-     * <uses-permission android:name="android.permission.CALL_PHONE" />
      * @param phone מספר טלפון שרוצים להתקשר אליו*/
     private void callAPhoneNymber(String phone){
         //בדיקה אם יש הרשאה לביצוע שיחה
@@ -152,13 +176,106 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
     public  void showPopUpMenu(View v,MyRecipeAdapter Recipe)
     {
         // بناء قائمةPopUpMenu
-        PopupMenu popup=new PopupMenu(this ,v);
+        PopupMenu popup=new PopupMenu(getContext(),v);
         //ملف الثائمة
-        popup.inflate(R.menu.popup_menu);
-
+        popup.inflate(R.menu.the_menu);
+        //اضافة معالج حدث لاختيار عنصر من القائمة
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.itmitem) ;
+                {
+                //هنا نكتب رد فعل هذا العنصر من القائمة
+                Toast.makeText(MyRecipeAdapter.this.getContext(), "Add", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(getContext(), ListRecipes.class);
+                getContext().startActivity(i);}
+              return true;
+            }
+        });
+        popup.show();//فتح وعرض القائمة
     }
-
-
+    /**
+     * הורדת קובץ/תמונה לזיכרון של הטלפון (לא לאחסון)
+     * @param fileURL כתובת הקובץ באחסון הענן
+     * @param toView רכיב התמונה המיועד להצגת התמונה
+     */
+    private void downloadImageToMemory(String fileURL, final ImageView toView)
+    {
+        if(fileURL==null)return;
+        // הפניה למיקום הקובץ באיחסון
+        StorageReference httpsReference = FirebaseStorage.getInstance().getReferenceFromUrl(fileURL);
+        final long ONE_MEGABYTE = 1024 * 1024;
+        //הורדת הקובץ והוספת מאזין שבודק אם ההורדה הצליחה או לא
+        httpsReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                // Data for "images/island.jpg" is returns, use this as needed
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                toView.setImageBitmap(Bitmap.createScaledBitmap(bmp, 90, 90, false));
+                Toast.makeText(getContext(), "downloaded Image To Memory", Toast.LENGTH_SHORT).show();
+            }
+            //מאזין אם ההורדה נכשלה
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+                Toast.makeText(getContext(), "onFailure downloaded Image To Local File "+exception.getMessage(), Toast.LENGTH_SHORT).show();
+                exception.printStackTrace();
+            }
+        });
+    }
+    /**
+     * מחיקת פריט כולל התמונה מבסיס הנתונים
+     * @param myRecipe הפריט שמוחקים
+     */
+   // private void delMyTaskFromDB_FB(Recipe myRecipe)
+    {
+        //הפנייה/כתובת  הפריט שרוצים למחוק
+     //   FirebaseFirestore db=FirebaseFirestore.getInstance();
+       // db.collection("MyUsers").
+         //       document(FirebaseAuth.getInstance().getUid()).
+         //       collection("subjects").
+         //       document(Recipe.).
+           //     collection("Tasks").document(Recipe.id).
+              //  delete().//מאזין אם המחיקה בוצעה
+             //   addOnCompleteListener(new OnCompleteListener<Void>() {
+        //    @Override
+           // public void onComplete(@NonNull Task<Void> task) {
+        //   if(task.isSuccessful())
+            //    {
+            //        remove(Recipe);// מוחקים מהמתאם
+            //        deleteFile(Myuser.getImage());// מחיקת הקובץ
+             //       Toast.makeText(getContext(), "deleted", Toast.LENGTH_SHORT).show();
+               // }
+         //   }
+      //  });
+    //}
+   // /**
+  //   * מחיקת קובץ האיחסון הענן
+  //   * @param fileURL כתובת הקובץ המיועד למחיקה
+    // */
+  //  private void deleteFile(String fileURL) {
+        // אם אין תמונה= כתובת ריקה אז לא עושים כלום מפסיקים את הפעולה
+  //      if(fileURL==null){
+       //     Toast.makeText(getContext(), "Theres no file to delete!!!", Toast.LENGTH_SHORT).show();
+      //      return;
+       // }
+        // הפניה למיקום הקובץ באיחסון
+     //   StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(fileURL);
+        //מחיקת הקובץ והוספת מאזין שבודק אם ההורדה הצליחה או לא
+       // storageReference.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+        //    @Override
+        //    public void onComplete(@NonNull Task<Void> task) {
+         //       if(task.isSuccessful())
+          //      {
+          //          Toast.makeText(getContext(), "file deleted", Toast.LENGTH_SHORT).show();
+        //        }
+         //       else {
+         //           Toast.makeText(getContext(), "onFailure: did not delete file "+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+            //    }
+        //    }
+      //  });
+    }
 
 
 }

@@ -48,6 +48,7 @@ dependencies {
     implementation libs.credentials.play.services.auth
     implementation libs.googleid
     implementation libs.firebase.database
+    implementation libs.firebase.storage
 
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
@@ -61,4 +62,7 @@ dependencies {
     implementation "androidx.room:room-rxjava3:$room_version"
     implementation "androidx.room:room-guava:$room_version"
     implementation "androidx.room:room-paging:$room_version"
+
+    //picasso
+    implementation("com.squareup.picasso:picasso:2.8")
 }
