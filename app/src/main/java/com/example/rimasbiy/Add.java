@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -26,6 +27,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.rimasbiy.MyRecipeTable.AirPlaneReceiver;
 import com.example.rimasbiy.MyRecipeTable.Recipe;
 import com.example.rimasbiy.data.AppDatabase;
 //import com.google.android.gms.tasks.OnFailureListener;
@@ -41,6 +43,7 @@ import com.google.firebase.database.FirebaseDatabase;
 //import com.google.firebase.database.FirebaseDatabase;
 
 public class Add extends AppCompatActivity {
+    private AirPlaneReceiver systemEventsReceiver;
     private Button buttonsaverecipe;
     private TextInputEditText recipename; // اسم الوصفة
     private TextInputEditText description; // وصف للوصفة
@@ -71,6 +74,8 @@ public class Add extends AppCompatActivity {
         instructions = findViewById(R.id.instructions);
         imagerecipe = findViewById(R.id.imagerecipe);
         button_select_image=findViewById(R.id.button_select_image);
+
+        systemEventsReceiver=new AirPlaneReceiver(buttonsaverecipe);
 
 
 //        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -260,5 +265,19 @@ public class Add extends AppCompatActivity {
                     }
                 });
     }
+    // 2. قم بتسجيله في onStart (عندما يصبح النشاط مرئيًا)
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // تسجيل الreceiver
+        IntentFilter filter = new IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+        registerReceiver(systemEventsReceiver, filter);
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // 3. قم بإلغاء تسجيله في onStop (عندما يصبح النشاط غير مرئي)
+        unregisterReceiver(systemEventsReceiver);
+    }
 }

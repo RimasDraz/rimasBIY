@@ -21,12 +21,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RimasBIY">
+        <receiver
+            android:name=".MyRecipeTable.AirPlaneReceiver"
+            android:enabled="true"
+            android:exported="true"></receiver>
+
         <service
             android:name=".userTable.MyService"
             android:enabled="true"
-            android:exported="true">
-
-        </service>
+            android:exported="true"></service>
 
         <activity
             android:name=".ListRecipes"
