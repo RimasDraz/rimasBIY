@@ -3,17 +3,23 @@ package com.example.rimasbiy;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static java.security.AccessController.getContext;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -32,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListRecipes extends AppCompatActivity {
+
   private   FloatingActionButton btnFav; // زر الاضافة
   private ListView lsViRecipes;// القائمة
   private MyRecipeAdapter adapter;
@@ -40,7 +47,6 @@ public class ListRecipes extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {//بتشتغل أول ما تنفتح شاشة عرض الوصفات
         super.onCreate(savedInstanceState);
-
 
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_list_recipes);//تحديد ملف التننسيق للشاشة, بناء الكائنات
@@ -61,6 +67,7 @@ public class ListRecipes extends AppCompatActivity {
                 startActivity(i);
             }
         });
+        getAllFromFirebase(adapter);
     }
     //استخراج معطيات (حسب قاعدة البيانات وعرضها على listview)
     //استخدمناها لضمان تحديث البيانات (Refreshing) تلقائيا
@@ -102,11 +109,4 @@ public class ListRecipes extends AppCompatActivity {
             }
         });
     }
-
-    /**
-     *  פתיחת אפליקצית שליחת sms
-     * @param msg .. ההודעה שרוצים לשלוח
-     * @param phone
-     */
-
 }

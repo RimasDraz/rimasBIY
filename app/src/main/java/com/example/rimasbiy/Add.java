@@ -3,7 +3,13 @@ package com.example.rimasbiy;
 
 import static android.content.ContentValues.TAG;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.DatePickerDialog;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -14,6 +20,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -38,11 +45,23 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Calendar;
 //import com.google.android.material.textfield.TextInputLayout;
 //import com.google.firebase.database.DatabaseReference;
 //import com.google.firebase.database.FirebaseDatabase;
 
 public class Add extends AppCompatActivity {
+
+    //إنشاء طلب إذن
+    private final ActivityResultLauncher<String> requestNotificationPermissionLauncher = registerForActivityResult( new ActivityResultContracts.RequestPermission(),
+            isGranted -> {
+                if (!isGranted) {
+                    Toast.makeText(this, "Notification permission denied", Toast.LENGTH_SHORT).show();
+                }
+            }
+    );
+
     private AirPlaneReceiver systemEventsReceiver;
     private Button buttonsaverecipe;
     private TextInputEditText recipename; // اسم الوصفة
@@ -54,6 +73,10 @@ public class Add extends AppCompatActivity {
     private Uri selectedImageUri;//صفة لحفظ عنوان الصورة بعد اختيارها
     private ActivityResultLauncher<String> pickImage;// ‏كائن لطلب الصورة من الهاتف
     private Button button_select_image;// لاختيار الصورة
+    private Button btnSetReminder;//כפתור לפתיחת חלון בחירת הזמן
+    private long selectedReminderTime = 0;// הזמן שנבחר במלישניות
+    private TextView tvReminderTime;// להצגת הזמן שנבחר
+
     String TAG="FilePermission";
 
     // مُشغّلات لطلب الأذونات
@@ -74,10 +97,9 @@ public class Add extends AppCompatActivity {
         instructions = findViewById(R.id.instructions);
         imagerecipe = findViewById(R.id.imagerecipe);
         button_select_image=findViewById(R.id.button_select_image);
-
+        tvReminderTime=findViewById(R.id.tvReminderTime);
+        btnSetReminder=findViewById(R.id.btnSetReminder);
         systemEventsReceiver=new AirPlaneReceiver(buttonsaverecipe);
-
-
 //        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
 //            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
 //            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -142,9 +164,16 @@ public class Add extends AppCompatActivity {
             }
         });
 
+        btnSetReminder.setOnClickListener(v -> showDateTimePicker());//استدعاء إجراء عند النقر على زر btnSetReminder: (يتم الاستدعاء باستخدام دالة lamda السهمية <- هذا هو onClick)
 
         checkAndRequestPermissions();//استدعاء دالة الأذونات
 
+        //تفعيل طلب الإذن
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
     }
 //فحص إذا كل الحقول معبّاية.
             private boolean validateFields () {
@@ -180,16 +209,19 @@ public class Add extends AppCompatActivity {
                     recipe.setName(recipename.getText().toString());//عبي القيم داخله
                     recipe.setDescription(description.getText().toString());
                     recipe.setIngredients(ingredients.getText().toString());
-                    recipe.setInstructions      (instructions.getText().toString());
+                    recipe.setInstructions(instructions.getText().toString());
+                    recipe.setReminderTime(selectedReminderTime);
                     /**
                      * ادخال البيانات في قاعدة البيانات
                      */
                     AppDatabase.getInstance(this).myRecipeQuery().insert(recipe);
                     Toast.makeText(this, "Recipe saved successfully", Toast.LENGTH_SHORT).show();
                     //save via frirebase database
-                   //saveRecipe(recipe);
+                   saveRecipe(recipe);
                     Intent serviceIntent=new Intent(this, MyService.class);
                     serviceIntent.putExtra("recipe_extra",recipe);
+                    scheduleAlarm(recipe);
+
                 }
                 return flag;
             }
@@ -280,4 +312,49 @@ public class Add extends AppCompatActivity {
         // 3. قم بإلغاء تسجيله في onStop (عندما يصبح النشاط غير مرئي)
         unregisterReceiver(systemEventsReceiver);
     }
+    //إجراء يفتح مربع حوار (نافذة) لاختيار الوقت ويحفظ الوقت المحدد.
+    private void showDateTimePicker() {
+        final Calendar currentDate = Calendar.getInstance();
+        final Calendar date = Calendar.getInstance();
+        //יצירת דיאלוג וטיפול באירוע הזמן שנבחר
+        new DatePickerDialog(this, (view, year, monthOfYear, dayOfMonth) -> {//אירוע בחירת הזמן
+            date.set(year, monthOfYear, dayOfMonth);
+            new TimePickerDialog(this, (view1, hourOfDay, minute) -> {
+                date.set(Calendar.HOUR_OF_DAY, hourOfDay);//הזמן שנבחר
+                date.set(Calendar.MINUTE, minute);
+                date.set(Calendar.SECOND, 0);
+                selectedReminderTime = date.getTimeInMillis();// הזמן שנבחר במלישניות
+                tvReminderTime.setText(date.getTime().toString());//הצגת הזמן
+            }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), false).show();
+        }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
+    }
+//العمليية التي تشغل الوقت
+    private void scheduleAlarm(Recipe recipe) {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        //תזמון הפעלה של
+        //RecipeReminderReceiver
+        Intent intent = new Intent(this, RecipeReminderReceiver.class);
+        //מעבירים את הנתונים לברודקסט רסיבר
+        intent.putExtra("title", recipe.getName());//
+        intent.putExtra("text", recipe.getDescription());//
+        //הכנת אובייקט תיזמון
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int) recipe.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        if (alarmManager != null) {
+            //יוצרים לפי גרסת מערכת הטלפון
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (alarmManager.canScheduleExactAlarms()) {
+                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, selectedReminderTime, pendingIntent);
+                } else {
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, selectedReminderTime, pendingIntent);
+                }
+            } else {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, selectedReminderTime, pendingIntent);
+            }
+        }
+    }
+
+
+
+
 }

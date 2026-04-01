@@ -10,6 +10,10 @@ import static java.nio.file.Files.delete;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.DatePickerDialog;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -33,6 +37,7 @@ import androidx.core.content.PermissionChecker;
 
 import com.example.rimasbiy.ListRecipes;
 import com.example.rimasbiy.R;
+import com.example.rimasbiy.RecipeReminderReceiver;
 import com.example.rimasbiy.userTable.Myuser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -63,9 +68,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 // مكتبات الملفات والنظام
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
 
 public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
     private final int recipeLayout;
+    private long selectedReminderTime;
 
     /**
      * العمل يبني الارتباط
@@ -155,6 +162,47 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
             }
         });
         popup.show();//فتح وعرض القائمة
+    }
+    private void showDateTimePicker() {
+        final Calendar currentDate = Calendar.getInstance();
+        final Calendar date = Calendar.getInstance();
+        //יצירת דיאלוג וטיפול באירוע הזמן שנבחר
+        new DatePickerDialog(getContext(), (view, year, monthOfYear, dayOfMonth) -> {//אירוע בחירת הזמן
+            date.set(year, monthOfYear, dayOfMonth);
+            new TimePickerDialog(getContext(), (view1, hourOfDay, minute) -> {
+                date.set(Calendar.HOUR_OF_DAY, hourOfDay);//הזמן שנבחר
+                date.set(Calendar.MINUTE, minute);
+                date.set(Calendar.SECOND, 0);
+                 selectedReminderTime = date.getTimeInMillis();// הזמן שנבחר במלישניות//
+                //todo add tv to show time
+                // tvReminderTime.setText(date.getTime().toString());//הצגת הזמן
+            }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), false).show();
+        }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
+    }
+    //العمليية التي تشغل الوقت
+    private void scheduleAlarm(Recipe recipe) {
+        AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
+        //תזמון הפעלה של
+        //RecipeReminderReceiver
+        Intent intent = new Intent(getContext(), RecipeReminderReceiver.class);
+        //מעבירים את הנתונים לברודקסט רסיבר
+        intent.putExtra("title", recipe.getName());//
+        intent.putExtra("text", recipe.getDescription());//
+        //הכנת אובייקט תיזמון
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) recipe.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        if (alarmManager != null) {
+            //יוצרים לפי גרסת מערכת הטלפון
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (alarmManager.canScheduleExactAlarms()) {
+                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, selectedReminderTime, pendingIntent);
+                } else {
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, selectedReminderTime, pendingIntent);
+                }
+            } else {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, selectedReminderTime, pendingIntent);
+            }
+        }
     }
 }
 

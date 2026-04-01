@@ -59,8 +59,9 @@
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:backgroundTint="#FFC9C9"
-        android:text="Login" />
+        android:backgroundTint="#E6B1B1"
+        android:text="LOG IN"
+        android:textColor="#000000" />
 
     <TextView
         android:id="@+id/orr"
@@ -74,8 +75,9 @@
         android:id="@+id/btnSignup"
         android:layout_width="match_parent"
         android:layout_height="69dp"
-        android:backgroundTint="#ffc9c9"
+        android:backgroundTint="#E6B1B1"
         android:onClick="onClick"
-        android:text="Logup" />
+        android:text="LOG UP"
+        android:textColor="#0B0B0B" />
 
 </LinearLayout>

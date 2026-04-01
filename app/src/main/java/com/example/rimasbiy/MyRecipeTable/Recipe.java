@@ -31,6 +31,7 @@ public class Recipe implements Serializable {
     private String instructions;// تعليمات
     private String image;// صورة الوصفة
     private String key;//المعرف الفريد الخاص بـ Firebase لربط الكائن المحلي بالسحابي
+     private long reminderTime;
 
     @NonNull
     @Override
@@ -43,7 +44,9 @@ public class Recipe implements Serializable {
                 ", instructions='" + instructions + '\'' +
                 ", image='" + image + '\'' +
                 ",key='"+ key+ '\''+
+                ", reminderTime=" + reminderTime +
                 '}';
+
     }
 
     public int getId() {
@@ -95,5 +98,10 @@ public class Recipe implements Serializable {
     }
 
     public String getKey(){return key;}
+
    public void setKey(String key){ this.key=key;}
+
+   public long  getReminderTime(){ return reminderTime;}
+     
+     public void setReminderTime(long reminderTime){this.reminderTime=reminderTime;}
 }
