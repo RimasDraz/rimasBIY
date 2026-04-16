@@ -12,7 +12,7 @@ import com.example.rimasbiy.MyRecipeTable.Recipe;
 import com.example.rimasbiy.userTable.Myuser;
 import com.example.rimasbiy.userTable.MyuserQuery;
 @Entity
-    @Database(entities = {Myuser.class, Recipe.class}, version = 4) //السطر الذي يجدد اسم قاعدة البيانات
+    @Database(entities = {Myuser.class, Recipe.class}, version = 5) //السطر الذي يجدد اسم قاعدة البيانات
 /**
  * االفئة المسؤولة عن بناء قاعدة البيانات بكل جداولها
  * وتوفر لنا كائن للتعامل مع قاعدة البيانات

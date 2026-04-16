@@ -57,12 +57,14 @@ private TextView textVi;//E-mail
         v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
         return insets;});
 
-//    FirebaseAuth auth=FirebaseAuth.getInstance();
-//    if(auth.getCurrentUser()!=null)
-//    {
-//        Intent i= new Intent(SignIn.this,ListRecipes.class);
-//        startActivity(i);
-//    }
+    FirebaseAuth auth=FirebaseAuth.getInstance();
+    if(auth.getCurrentUser()!=null)
+    {
+
+        Intent i= new Intent(SignIn.this,ListRecipes.class);
+        startActivity(i);
+        finish();
+    }
 //هون عم نربط عناصر الواجهة (EditText, Button...) بالكود عشان نقدر نتحكم فيهم
     tvAcount=findViewById(R.id.tvAcount);
     username=findViewById(R.id.username);

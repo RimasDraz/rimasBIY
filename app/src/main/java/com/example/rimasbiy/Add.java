@@ -13,9 +13,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -43,13 +46,18 @@ import com.example.rimasbiy.userTable.MyService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Calendar;
 //import com.google.android.material.textfield.TextInputLayout;
 //import com.google.firebase.database.DatabaseReference;
 //import com.google.firebase.database.FirebaseDatabase;
+import android.net.Uri;
 
 public class Add extends AppCompatActivity {
 
@@ -211,15 +219,25 @@ public class Add extends AppCompatActivity {
                     recipe.setIngredients(ingredients.getText().toString());
                     recipe.setInstructions(instructions.getText().toString());
                     recipe.setReminderTime(selectedReminderTime);
+                    recipe.setOwner(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                    //هذه الدالة يمكن استدعاؤها بعد استلام عنوان الصورة Uri وتحويلها لنص لحفظها في الصفة المخصصة لها في الكائن
+                    if (selectedImageUri!=null)
+                    {
+                        //تحويل الصورة وحفظها
+                        recipe.setImage(convertImageToString(selectedImageUri));                    }
                     /**
                      * ادخال البيانات في قاعدة البيانات
                      */
                     AppDatabase.getInstance(this).myRecipeQuery().insert(recipe);
                     Toast.makeText(this, "Recipe saved successfully", Toast.LENGTH_SHORT).show();
                     //save via frirebase database
-                   saveRecipe(recipe);
+                  saveRecipe(recipe);
+                //save by service
                     Intent serviceIntent=new Intent(this, MyService.class);
                     serviceIntent.putExtra("recipe_extra",recipe);
+                    serviceIntent.putExtra("group","recipes");
+                    startService(serviceIntent);
+                    finish();
                     scheduleAlarm(recipe);
 
                 }
@@ -237,7 +255,6 @@ public class Add extends AppCompatActivity {
                 Log.d(TAG, "READ_MEDIA_IMAGES permission already granted");
                 Toast.makeText(this, "إذن قراءة الصور ممنوح بالفعل", Toast.LENGTH_SHORT).show();
             }
-
 //        });
 //بنخليه يراقب العنصر، وأول ما المستخدم يضغط → ينفّذ كود معيّن.
             buttonsaverecipe.setOnClickListener(new View.OnClickListener() {
@@ -261,6 +278,34 @@ public class Add extends AppCompatActivity {
 //                    }
                 }
             });
+        }
+    }
+    //* Converts an image Uri to a Base64 string.
+//*
+//* @param uri The Uri of the image to convert.
+//* @return The Base64 string representation of the image.
+    //تحويل الصورة لنص
+    public String convertImageToString(Uri uri) {
+        InputStream inputStream = null;
+        String imageString = null;
+        // تحتوي هذه الدالة على وظيفة تحويل الصورة من مكان التخزين المؤقت إلى نص بنموذج Base64 ليتم تخزينه في قاعدة البيانات، وهذا يتيح للبرنامج عرض الصورة من قاعدة البيانات في وقت لاحق بدون الحاجة إلى فتح الصورة من جهاز المستخدم.
+        try {
+            inputStream = getContentResolver().openInputStream(uri);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            if (bitmap == null) {
+                Toast.makeText(this, "Failed to process image", Toast.LENGTH_SHORT).show();
+                return null;
+            }
+            // Compress image to keep Base64 string within reasonable limit
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 40, outputStream);
+            byte[] imageBytes = outputStream.toByteArray();
+            imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+            return imageString;
+        }
+        catch (FileNotFoundException e) {
+            Toast.makeText(this, "Failed file not found", Toast.LENGTH_SHORT).show();
+            throw new RuntimeException(e);
         }
     }
     //حفظ الوصفة في Firebase Realtime Database

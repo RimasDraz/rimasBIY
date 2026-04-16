@@ -2,30 +2,22 @@ package com.example.rimasbiy.MyRecipeTable;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
-import static androidx.core.app.ActivityCompat.requestPermissions;
-import static androidx.core.content.ContextCompat.checkSelfPermission;
-import static androidx.core.content.ContextCompat.startActivity;
-
-import static java.nio.file.Files.delete;
-
-import android.Manifest;
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.PointerIcon;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,41 +25,21 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
-import androidx.core.content.PermissionChecker;
 
 import com.example.rimasbiy.ListRecipes;
 import com.example.rimasbiy.R;
 import com.example.rimasbiy.RecipeReminderReceiver;
-import com.example.rimasbiy.userTable.Myuser;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
+import com.example.rimasbiy.userTable.MyService;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.auth.FirebaseAuth;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 // مكتبات معالجة الصور
-import com.squareup.picasso.Picasso;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 // مكتبات Firebase Storage (للملفات والصور)
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.FileDownloadTask;
-import com.google.firebase.storage.FirebaseStorage;
 
 // مكتبات معالجة الأحداث والنجاح/الفشل
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.OnFailureListener;
 
 // مكتبات الملفات والنظام
-import java.io.File;
-import java.io.IOException;
 import java.util.Calendar;
 
 public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
@@ -94,8 +66,9 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
         MaterialButton shareimageb = vitem.findViewById(R.id.shareimageb);
         MaterialTextView nameCake = vitem.findViewById(R.id.nameCake);
         TextView disText = vitem.findViewById(R.id.disText);
-
         Recipe current = getItem(position);//هات الوصفة اللي رقمها position في القائمة.
+        cakeimg.setImageBitmap(stringToBitmap(current.getImage()));
+
         /**
          * عرض المعطيات على حقول الرسم
          */
@@ -108,6 +81,12 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
             @Override
             public void onClick(View view) {
                 openSendSmsApp(current.getName(), "");// אם יש טלפון המשימה מעבירים במקום ה ״״
+            }
+        });
+        loveimageb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDateTimePicker(current);
             }
         });
         return vitem;//رجّع العنصر
@@ -163,7 +142,7 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
         });
         popup.show();//فتح وعرض القائمة
     }
-    private void showDateTimePicker() {
+    private void showDateTimePicker(Recipe current) {
         final Calendar currentDate = Calendar.getInstance();
         final Calendar date = Calendar.getInstance();
         //יצירת דיאלוג וטיפול באירוע הזמן שנבחר
@@ -174,6 +153,13 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
                 date.set(Calendar.MINUTE, minute);
                 date.set(Calendar.SECOND, 0);
                  selectedReminderTime = date.getTimeInMillis();// הזמן שנבחר במלישניות//
+                scheduleAlarm(current);
+                //save by service
+                Intent serviceIntent=new Intent(getContext(), MyService.class);
+                serviceIntent.putExtra("recipe_extra",current);
+                serviceIntent.putExtra("group","favorites");
+               getContext().startService(serviceIntent);
+
                 //todo add tv to show time
                 // tvReminderTime.setText(date.getTime().toString());//הצגת הזמן
             }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), false).show();
@@ -202,6 +188,22 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
             } else {
                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, selectedReminderTime, pendingIntent);
             }
+        }
+    }
+    /**
+     * Decodes the image string and returns the corresponding Bitmap object.
+     *
+     * @param imageString the image string to decode
+     * @return the decoded Bitmap object
+     */
+    //استرجاع الصورة من النص
+    private Bitmap stringToBitmap(String imageString) {
+        if (imageString == null || imageString.isEmpty()) return null;
+        try {
+            byte[] decodedString = Base64.decode(imageString, Base64.DEFAULT);
+            return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        } catch (Exception e) {
+            return null;
         }
     }
 }

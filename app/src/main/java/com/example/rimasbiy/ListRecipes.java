@@ -1,93 +1,142 @@
 package com.example.rimasbiy;
 
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static java.security.AccessController.getContext;
-
-import android.Manifest;
-import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.rimasbiy.MyRecipeTable.MyRecipeAdapter;
 import com.example.rimasbiy.MyRecipeTable.Recipe;
 import com.example.rimasbiy.data.AppDatabase;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * מסך הצגת רשימת המתכונים.
+ * شاشة عرض قائمة الوصفات.
+ */
+
+//todo add bottom menu my recipes
 public class ListRecipes extends AppCompatActivity {
+    private ListView lsViRecipes;
+    private MyRecipeAdapter adapter;
+    private BottomNavigationView bottomNavigationView;
+    private String group;// اسم المجموعة الي بطلع منها المعطيات
 
-  private   FloatingActionButton btnFav; // زر الاضافة
-  private ListView lsViRecipes;// القائمة
-  private MyRecipeAdapter adapter;
-
-    @SuppressLint("MissingInflatedId")
     @Override
-    protected void onCreate(Bundle savedInstanceState) {//بتشتغل أول ما تنفتح شاشة عرض الوصفات
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_list_recipes);
 
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_list_recipes);//تحديد ملف التننسيق للشاشة, بناء الكائنات
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        // אתחול רכיבי הממשק - تهيئة عناصر الواجهة
         lsViRecipes = findViewById(R.id.lsViRecipes);
-        adapter = new MyRecipeAdapter(this, R.layout.activity_list_recipes);//  activity_list_recipes  تعريف الوسيط (Adabter)المسؤول عن تحويل كائنات الوصفة الى عناصر مرئية بناء على التصميم
-        lsViRecipes.setAdapter(adapter);                                           //ربطه  بالlistview
-//هون عم نربط عناصر الواجهة (EditText, Button...) بالكود عشان نقدر نتحكم فيهم
-        btnFav = findViewById(R.id.adFab);
-        btnFav.setOnClickListener(new View.OnClickListener() {//هذا السطر يقوم بربط حدث النقر (Click Event) بالزر btnFav. عند ضغط المستخدم على الزر، يتم تنفيذ الكود الموجود داخل الدالة onClick().
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        // הגדרת המתאם (Adapter) - استخدام التصميم الصحيح لكل عنصر في القائمة
+        adapter = new MyRecipeAdapter(this, R.layout.recipe_item_layout);
+        lsViRecipes.setAdapter(adapter);
+
+        // הגדרת מאזין לתפריט התחתון - إعداد مستمع لنقرات القائمة السفلية
+        setupBottomNavigation();
+    }
+//معالجة حدث للقائمة السفلى
+    private void setupBottomNavigation() {
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.nav_all) {
+                loadAllRecipes(); // הצגת הכל - عرض الكل
+                return true;
+            } else if (itemId == R.id.nav_favorites) {
+                showFavorites(); // הצגת מועדפים - عرض المفضلة
+                return true;
+            } else if (itemId == R.id.nav_add) {
+                // מעבר למסך הוספה - الانتقال لشاشة الإضافة
+                startActivity(new Intent(ListRecipes.this, Add.class));
+                return true;
+            } else if (itemId == R.id.nav_logout) {
+                // יציאה וחזרה למסך התחברות - تسجيل الخروج والعودة للبداية
+                showYesNoDialog();
+                finish();
+                return true;
+            } else if (itemId == R.id.nav_myrecipes) {
+                Intent intent=(new Intent(ListRecipes.this, ListRecipes.class));
+                intent.putExtra("DISPLAY_MODE","ONLY_MY_RECIPES");
+                startActivity(intent);
+                return true;
+            }
+            return false;
+        });
+    }
+    public void showYesNoDialog()
+    {
+        //تجهيز بناء شبكة حوار "ديالوغ" بتلقى برامتر مؤشر للنشاط الحالي
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        builder.setTitle("Log Out");//تحديد العنوان
+        builder.setMessage("Are you sure?");//تحدي فحوى شباك الديالوغ
+        builder.setPositiveButton("yes", new DialogInterface.OnClickListener() {//اضافة زر مع اللسينر
             @Override
-            public void onClick(View v) {//لما نضغطه ➜ ننتقل لشاشة Add
-                Intent i = new Intent(ListRecipes.this, Add.class);
-                startActivity(i);
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //معالجة حدث للموافقة
+                Toast.makeText(ListRecipes.this,"signing out",Toast.LENGTH_SHORT).show();
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(ListRecipes.this, SignIn.class));
+                finish();
             }
         });
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Toast.makeText(ListRecipes.this,"signing out",Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+        AlertDialog dialog=builder.create();//بناء شباك الديالوغ
+        dialog.show();//عرض الشباك
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // רענון הנתונים בכל פעם שחוזרים למסך - تحديث البيانات عند العودة للشاشة
+        loadAllRecipes();
+    }
+
+    /**
+     * טעינת כל המתכונים ממסד הנתונים המקומי (Room).
+     * جلب كافة الوصفات من قاعدة البيانات المحلية.
+     */
+    private void loadAllRecipes() {
+        group="recipes";
         getAllFromFirebase(adapter);
     }
-    //استخراج معطيات (حسب قاعدة البيانات وعرضها على listview)
-    //استخدمناها لضمان تحديث البيانات (Refreshing) تلقائيا
-    //تجيب كل الوصفات من قاعدة البيانات
-    protected void onResume() {//بتشتغل كل مرة نرجع فيها لهاي الشاشة
-        super.onResume();
-        //  ....استخراج جميع الوصفات
-        List<Recipe> recipes = AppDatabase.getInstance(this).myRecipeQuery().getAll();
-        // .... تنظيف المنسق من جميع المعطيات السابقة
-        adapter.clear();
-        //اضافة المعطيات الجديدة
-        adapter.addAll(recipes);
-        //.... تحديث المنسق الجديد
-        adapter.notifyDataSetChanged();
+
+    /**
+     * פונקציה להצגת מועדפים בלבד.
+     * دالة لعرض الوصفات المفضلة فقط.
+     */
+    private void showFavorites() {
+        group="favorites";
+        getAllFromFirebase(adapter);
     }
     private void getAllFromFirebase( MyRecipeAdapter adapter) {
         //عنوان قاعدة البيانات
         FirebaseDatabase database = FirebaseDatabase.getInstance();//تتصل بقاعدة البيانات
         // عنوان مجموعة المعطيات داخل قاعدة البيانات
-        DatabaseReference myRef = database.getReference("Recipes");
+        DatabaseReference myRef = database.getReference(group);
 //إضافة listener مما يسبب الإصغاء لكل تغيير حتلنة عرض المعطيات//
         //يسمع لأي تغيير يصير في Firebase ويحدث القائمة تلقائي
         myRef.addValueEventListener(new ValueEventListener() {//in database  myRef تقوم الدالة بتجديث واجهة المستخدم ul تلقائيا في كل مرة يتغير فيها اي معطى داخل المسار

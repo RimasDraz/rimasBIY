@@ -17,15 +17,16 @@ public class MyService extends Service {
         //read the data that received within the intent
         if (intent != null && intent.hasExtra("recipe_extra")) {
             Recipe recipe = (Recipe)  intent.getSerializableExtra("recipe_extra");
-            saveRecipeToFirebase(recipe);
+            String group=intent.getStringExtra("group");
+            saveRecipeToFirebase(recipe,group);
         }
         // START_NOT_STICKY means if the system kills the service, don't recreate it automatically
         return START_NOT_STICKY;
     }
 
 
-    private void saveRecipeToFirebase(Recipe recipe) {
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("recipe");
+    private void saveRecipeToFirebase(Recipe recipe, String group) {
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference(group);
         String key = myRef.push().getKey();
         recipe.setKey(key);
 
@@ -34,6 +35,11 @@ public class MyService extends Service {
             if (fbTask.isSuccessful()) {
                 // In a service, use context from getApplicationContext() for Toasts
                 Toast.makeText(getApplicationContext(), "Sync Successful", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                Toast.makeText(getApplicationContext(), "Sync Failed", Toast.LENGTH_SHORT).show();
+
             }
             // Stop the service once the work is done to save battery/RAM
             stopSelf();
