@@ -90,7 +90,7 @@ public class signup extends AppCompatActivity {
         btnsign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                validateFields();
+                validateFields();//استدعاء الدالة
 //               if(validateFields())
 //               {
 //                   Intent i=new Intent(signup.this, ListRecipes.class);
@@ -139,7 +139,7 @@ public class signup extends AppCompatActivity {
         }
         if(flag)
         {
-            Myuser myuser = new Myuser();
+            Myuser myuser = new Myuser();//انشاء كائن
             myuser.setEmail(email);
             myuser.setPhone(phone);
             myuser.setPassword(password);
@@ -150,7 +150,7 @@ public class signup extends AppCompatActivity {
             // في firebase انشاء حساب بواسطة الميل و السسما
             auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {//
                 @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {//الجواب
+                public void onComplete(@NonNull Task<AuthResult> task) {// اذا العملية زبطت او لا فبطلع الجواب
                     if(task.isSuccessful()){//اذا العملية زبطت
                         Toast.makeText(signup.this,"Signing up Succeeded",Toast.LENGTH_SHORT).show();
                         finish();

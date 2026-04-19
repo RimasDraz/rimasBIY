@@ -69,17 +69,16 @@ public class ListRecipes extends AppCompatActivity {
             } else if (itemId == R.id.nav_logout) {
                 // יציאה וחזרה למסך התחברות - تسجيل الخروج والعودة للبداية
                 showYesNoDialog();
-                finish();
+
                 return true;
             } else if (itemId == R.id.nav_myrecipes) {
-                Intent intent=(new Intent(ListRecipes.this, ListRecipes.class));
-                intent.putExtra("DISPLAY_MODE","ONLY_MY_RECIPES");
-                startActivity(intent);
+                showMyRecipe();
                 return true;
             }
             return false;
         });
     }
+    //ظهور شاشة لتسجيل الدخول اذا بده يسجل دخول او لا
     public void showYesNoDialog()
     {
         //تجهيز بناء شبكة حوار "ديالوغ" بتلقى برامتر مؤشر للنشاط الحالي
@@ -100,14 +99,16 @@ public class ListRecipes extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Toast.makeText(ListRecipes.this,"signing out",Toast.LENGTH_SHORT).show();
-                finish();
+
             }
         });
         AlertDialog dialog=builder.create();//بناء شباك الديالوغ
         dialog.show();//عرض الشباك
     }
 
-
+    // بتشتغل عند فتح التطبيق بعد oncreat & onstart
+    //عند الرجوع للتطبيق اذا كنت تستعمل تطبيق اخر او بمحل ورجعت على التطبيق
+    //عن اغلاق الشاشة اذا ظهر ديالوج او اتصال هاتفي غطى الشاشة ثم اختفى برجع النشاط للدالة هاي
     @Override
     protected void onResume() {
         super.onResume();
@@ -123,7 +124,6 @@ public class ListRecipes extends AppCompatActivity {
         group="recipes";
         getAllFromFirebase(adapter);
     }
-
     /**
      * פונקציה להצגת מועדפים בלבד.
      * دالة لعرض الوصفات المفضلة فقط.
@@ -132,7 +132,15 @@ public class ListRecipes extends AppCompatActivity {
         group="favorites";
         getAllFromFirebase(adapter);
     }
-    private void getAllFromFirebase( MyRecipeAdapter adapter) {
+    /**
+     * دالة لعرض وصفاتي فقط.
+     */
+    private void showMyRecipe(){
+        String myId=FirebaseAuth.getInstance().getCurrentUser().getUid();
+        group="recipes/"+myId;
+        getAllFromFirebase(adapter);
+    }
+    private void getAllFromFirebase( MyRecipeAdapter adapter) {// جلب البيانات وعرضها في التطبيق
         //عنوان قاعدة البيانات
         FirebaseDatabase database = FirebaseDatabase.getInstance();//تتصل بقاعدة البيانات
         // عنوان مجموعة المعطيات داخل قاعدة البيانات
@@ -140,7 +148,8 @@ public class ListRecipes extends AppCompatActivity {
 //إضافة listener مما يسبب الإصغاء لكل تغيير حتلنة عرض المعطيات//
         //يسمع لأي تغيير يصير في Firebase ويحدث القائمة تلقائي
         myRef.addValueEventListener(new ValueEventListener() {//in database  myRef تقوم الدالة بتجديث واجهة المستخدم ul تلقائيا في كل مرة يتغير فيها اي معطى داخل المسار
-            @Override//دالة معالج حدث تقوم بتلقى نسخة عن كل المعطيات عند أي تغيير
+            @Override
+            //دالة معالج حدث تقوم بتلقى نسخة عن كل المعطيات عند أي تغيير
             public void onDataChange(@NonNull DataSnapshot snapshot) {//تحدث القائمة تلقائياً
                 adapter.clear();//حذف كل المعطيات بالوسيط
                 for (DataSnapshot recipeSnapshot : snapshot.getChildren()) {// يتم استخدام الحلقة للمرور على كل "وصفة" موجودة تحت المسار recipe

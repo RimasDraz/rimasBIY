@@ -63,7 +63,7 @@ public class Add extends AppCompatActivity {
 
     //إنشاء طلب إذن
     private final ActivityResultLauncher<String> requestNotificationPermissionLauncher = registerForActivityResult( new ActivityResultContracts.RequestPermission(),
-            isGranted -> {
+            isGranted -> {//  بطريقة lamdaاذا اعطى المستخدم اذن
                 if (!isGranted) {
                     Toast.makeText(this, "Notification permission denied", Toast.LENGTH_SHORT).show();
                 }
@@ -85,7 +85,7 @@ public class Add extends AppCompatActivity {
     private long selectedReminderTime = 0;// הזמן שנבחר במלישניות
     private TextView tvReminderTime;// להצגת הזמן שנבחר
 
-    String TAG="FilePermission";
+    String TAG="FilePermission";//علامة مميزة (Tag) تستخدم لتعريف رسائل الخطأ (Logs) الخاصة بهذا الكلاس في الـ Logcat
 
     // مُشغّلات لطلب الأذونات
     private ActivityResultLauncher<String> requestReadMediaImagesPermission;
@@ -117,16 +117,13 @@ public class Add extends AppCompatActivity {
        //ويتأكد إذا المستخدم وافق أو رفض
         requestReadMediaImagesPermission=registerForActivityResult(new ActivityResultContracts.RequestPermission(),isGranted->
         {
-
             if (isGranted){
                 Log.d(TAG,"READ_MEDIA_IMAGES permission granted");
                 Toast.makeText(this,"تم منح إذن قراءة الصور", Toast.LENGTH_SHORT).show();
-
             } else {
                 Log.d(TAG, "READ_MEDIA_IMAGES permission denied");
                 Toast.makeText(this, "تم رفض إذن قراءة الصور", Toast.LENGTH_SHORT).show();
                 // التعامل مع حالة رفض الإذن
-
             }
         });
 //دالة مسؤولة عن: فتح معرض الصور
@@ -152,19 +149,17 @@ public class Add extends AppCompatActivity {
             }
         });
 
-// Initialize the ActivityResultLauncher for picking images
+// Initialize the ActivityResultLauncher for picking imagesتهيئة مُشغّل نتائج النشاط لاختيار الصور
         pickImage = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
             @Override
             public void onActivityResult(Uri result) {
                 if (result != null) {
-                    selectedImageUri = result;
-                    imagerecipe.setImageURI(result);
-                    imagerecipe.setVisibility(View.VISIBLE);
+                    selectedImageUri = result;//حفظ مسار الصورة في متفير لاستعماله بعدين
+                    imagerecipe.setImageURI(result);//عرض الصورة الموجودة في الشاشة
+                    imagerecipe.setVisibility(View.VISIBLE);//تاكد انه الصورة موحودة
                 }
             }
         });
-
-
         imagerecipe.setOnClickListener(new View.OnClickListener() {//لما ينكبس على الـ ImageView نفّذ الكود اللي جواته
             @Override
             public void onClick(View v) {//هاي الدالة اللي بتشتغل عند الضغط.
@@ -233,13 +228,12 @@ public class Add extends AppCompatActivity {
                     //save via frirebase database
                   saveRecipe(recipe);
                 //save by service
-                    Intent serviceIntent=new Intent(this, MyService.class);
-                    serviceIntent.putExtra("recipe_extra",recipe);
-                    serviceIntent.putExtra("group","recipes");
-                    startService(serviceIntent);
+                    Intent serviceIntent=new Intent(this, MyService.class);//(Intent) لفتح الخدمة المسماة MyService. الخدمة تُستخدم عادةً لتنفيذ عمليات في الخلفية لا تحتاج لواجهة مستخدم.
+                    serviceIntent.putExtra("recipe_extra",recipe);//مرير كائن الوصفة (recipe) إلى الخدمة حتى تعرف الخدمة أي وصفة ستقوم بمعالجتها.
+                    serviceIntent.putExtra("group","recipes");//تمرير نص إضافي يحدد "المجموعة" (Group) لتنظيم البيانات داخل الخدمة.
+                    startService(serviceIntent);//لأمر الفعلي لتشغيل الخدمة. هنا يبدأ نظام أندرويد بتنفيذ الأكواد الموجودة داخل كلاس MyService
                     finish();
-                    scheduleAlarm(recipe);
-
+                    scheduleAlarm(recipe);//استدعاء دالة لبرمجة منبه أو تذكير خاص بهذه الوصفة (مثلاً لتذكير المستخدم بموعد الطبخ)، وذلك باستخدام الـAlarmManager
                 }
                 return flag;
             }
@@ -260,7 +254,7 @@ public class Add extends AppCompatActivity {
             buttonsaverecipe.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    validateFields();
+                    validateFields();//استدعاء الدالة
 //                    if (validateFields()) {
 //                        buttonsaverecipe.setEnabled(false);
 //                        buttonsaverecipe.setText("Saving...");
@@ -280,32 +274,34 @@ public class Add extends AppCompatActivity {
             });
         }
     }
+
     //* Converts an image Uri to a Base64 string.
 //*
 //* @param uri The Uri of the image to convert.
 //* @return The Base64 string representation of the image.
-    //تحويل الصورة لنص
+    // تخزينه بسهولة في قاعدة البيانات. تحويل الصورة لنص
     public String convertImageToString(Uri uri) {
         InputStream inputStream = null;
         String imageString = null;
         // تحتوي هذه الدالة على وظيفة تحويل الصورة من مكان التخزين المؤقت إلى نص بنموذج Base64 ليتم تخزينه في قاعدة البيانات، وهذا يتيح للبرنامج عرض الصورة من قاعدة البيانات في وقت لاحق بدون الحاجة إلى فتح الصورة من جهاز المستخدم.
         try {
-            inputStream = getContentResolver().openInputStream(uri);
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            inputStream = getContentResolver().openInputStream(uri);//فتح قناة اتصال (Stream) لقراءة البيانات الخام للصورة من العنوان (uri) الذي اختاره المستخدم من معرض الصور.
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);//تحويل البيانات المقروءة إلى كائن Bitmap، وهو التنسيق الذي يتعامل معه أندرويد لعرض ومعالجة الصور برمجياً.
             if (bitmap == null) {
                 Toast.makeText(this, "Failed to process image", Toast.LENGTH_SHORT).show();
                 return null;
             }
             // Compress image to keep Base64 string within reasonable limit
+            //ضغط الصورة وتحويلها إلى صيغة JPEG بجودة 40%. هذه الخطوة ضرورية جداً لتقليل حجم النص الناتج، لأن قواعد البيانات لها حدود في استيعاب النصوص الطويلة جداً.
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 40, outputStream);
-            byte[] imageBytes = outputStream.toByteArray();
-            imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+            byte[] imageBytes = outputStream.toByteArray();//تحويل الصورة المضغوطة إلى مصفوفة من البايتات (Bytes) تمهيداً لتشفيرها
+            imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);//تحويل مصفوفة البايتات إلى نص بنظام Base64. هذا النص هو ما سيتم إرساله وتخزينه في Firebase.
             return imageString;
         }
-        catch (FileNotFoundException e) {
-            Toast.makeText(this, "Failed file not found", Toast.LENGTH_SHORT).show();
-            throw new RuntimeException(e);
+        catch (FileNotFoundException e) {//التوثيق: التقاط الخطأ في حال عدم العثور على ملف الصورة في المسار المحدد (Uri)
+            Toast.makeText(this, "Failed file not found", Toast.LENGTH_SHORT).show();//إظهار رسالة تنبيه للمستخدم تخبره أن "الملف غير موجود"، لكي يفهم لماذا لم يتم رفع الصورة.
+            throw new RuntimeException(e);//رمي خطأ برمجياً لإيقاف التنفيذ.
         }
     }
     //حفظ الوصفة في Firebase Realtime Database
@@ -357,9 +353,9 @@ public class Add extends AppCompatActivity {
         // 3. قم بإلغاء تسجيله في onStop (عندما يصبح النشاط غير مرئي)
         unregisterReceiver(systemEventsReceiver);
     }
-    //إجراء يفتح مربع حوار (نافذة) لاختيار الوقت ويحفظ الوقت المحدد.
+    /// دالة لإظهار اختيار التاريخ والوقت وحفظهما بصيغة الميلي ثانية
     private void showDateTimePicker() {
-        final Calendar currentDate = Calendar.getInstance();
+        final Calendar currentDate = Calendar.getInstance();//الحصول على الوقت والتاريخ الحاليين للجهاز لاستخدامهما كإعدادات افتراضية عند فتح النافذة.
         final Calendar date = Calendar.getInstance();
         //יצירת דיאלוג וטיפול באירוע הזמן שנבחר
         new DatePickerDialog(this, (view, year, monthOfYear, dayOfMonth) -> {//אירוע בחירת הזמן
@@ -373,23 +369,24 @@ public class Add extends AppCompatActivity {
             }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), false).show();
         }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
     }
-//العمليية التي تشغل الوقت
+///دالة لبرمجة إشعار تذكيري للوصفة باستخدام مدير المنبهات في النظام
     private void scheduleAlarm(Recipe recipe) {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+      AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);//استدعاء مدير المنبهات الخاص بنظام أندرويد
         //תזמון הפעלה של
         //RecipeReminderReceiver
-        Intent intent = new Intent(this, RecipeReminderReceiver.class);
+        Intent intent = new Intent(this, RecipeReminderReceiver.class);//كلاس اسمه RecipeReminderReceiver. هذا الكلاس هو المسؤول عن إظهار الإشعار (Notification) عندما يحين الوقت.
         //מעבירים את הנתונים לברודקסט רסיבר
-        intent.putExtra("title", recipe.getName());//
-        intent.putExtra("text", recipe.getDescription());//
+        intent.putExtra("title", recipe.getName());//إرسال اسم الوصفة ووصفها إلى المنبه ليتم عرضهما داخل الإشعار لاحقاً.
+        intent.putExtra("text", recipe.getDescription());
         //הכנת אובייקט תיזמון
+        //تغليف الـ Intent داخل PendingIntent. هي بمثابة "تذكرة مؤجلة" نعطيها للنظام لينفذها في المستقبل حتى لو كان التطبيق مغلقاً.
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int) recipe.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         if (alarmManager != null) {
             //יוצרים לפי גרסת מערכת הטלפון
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 if (alarmManager.canScheduleExactAlarms()) {
-                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, selectedReminderTime, pendingIntent);
+                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, selectedReminderTime, pendingIntent);//ضبط المنبه ليعمل في الوقت المحدد تماماً، حتى لو كان الهاتف في "وضع السكون"
                 } else {
                     alarmManager.set(AlarmManager.RTC_WAKEUP, selectedReminderTime, pendingIntent);
                 }
@@ -398,8 +395,4 @@ public class Add extends AppCompatActivity {
             }
         }
     }
-
-
-
-
 }

@@ -31,13 +31,13 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
         final Handler handler = new Handler();//تنفيذ كود بعد مدة زمنية معينة
-        handler.postDelayed(new Runnable() {
+        handler.postDelayed(new Runnable() {//تحبر البرنامج يستنى شوي وبعدها ينفذ الكود الموجود
             @Override
             public void run() {
-                Intent i = new Intent(MainActivity.this, SignIn.class);
-                startActivity(i);
+                Intent i = new Intent(MainActivity.this, SignIn.class);//امر الانتقال تحديد البداية والوجهة
+                startActivity(i);//الامر الفعلي الذي يفتح الشاشة االي بدنا ننقل عليها
             }
-        }, 3000); // 3000 = 3 seconds in milliseconds
+        }, 3000); // 3000 = 3 seconds in milliseconds وقت الانتظار
 
 
 

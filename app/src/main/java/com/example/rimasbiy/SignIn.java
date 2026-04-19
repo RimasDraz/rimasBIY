@@ -30,7 +30,7 @@ import com.google.firebase.auth.FirebaseAuth;
 //import com.google.firebase.auth.AuthResult;
 //import com.google.firebase.auth.FirebaseAuth;
 
-public class SignIn extends AppCompatActivity {
+public class SignIn extends AppCompatActivity {//للتحقق مما اذا كان المستخدم مسجل دخول من قبل
 private TextView tvAcount;// Have an account?
 /**
  * حقل الايميل
@@ -57,13 +57,12 @@ private TextView textVi;//E-mail
         v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
         return insets;});
 
-    FirebaseAuth auth=FirebaseAuth.getInstance();
-    if(auth.getCurrentUser()!=null)
+    FirebaseAuth auth=FirebaseAuth.getInstance();//تفعيل نظام المستخدمين في التطبيق عشان اقدر اطلب من الفير بيس معلومات عن الشخص االلي فاتح التطبيق
+    if(auth.getCurrentUser()!=null)//يسال التطبيق اذا كان هناك تسجيل دخول مسبق
     {
-
-        Intent i= new Intent(SignIn.this,ListRecipes.class);
-        startActivity(i);
-        finish();
+        Intent i= new Intent(SignIn.this,ListRecipes.class);//اذا كانت الاجابة نعم يتم نقله فورا لشاشد الوصفات دون الحاجة لكتابة الايميل والباسورد كمان مرة
+        startActivity(i);//الامر الفعلي الذي يفتح الشاشة االي بدنا ننقل عليها
+        finish();// تغلق الشاشة عشان ميرجعش عليها المستخدم
     }
 //هون عم نربط عناصر الواجهة (EditText, Button...) بالكود عشان نقدر نتحكم فيهم
     tvAcount=findViewById(R.id.tvAcount);
@@ -82,7 +81,7 @@ private TextView textVi;//E-mail
     btnLogin.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {//  هون الانتقال بيصير من: SignIn ➜ ListRecipes اذا التسجيل نجح
-            validateFields();
+            validateFields();//للتاكد ان المستخدم كتب ايميل وباسورد بشكل صح
         }
     });
     }
@@ -91,25 +90,23 @@ private TextView textVi;//E-mail
     // and the flag is set to false, indicating that the fields are invalid
     // if the fields are valid, a new Myuser object is created and the flag is set to true, indicating that the fields are valid
 private boolean validateFields(){ // بتفحص اذا الباسورد والايميل وبترجعىtrue إذا كلشي تمام false إذا في خطأ
-    boolean flag=true;//المتغير بيحدد إذا البيانات صحيحة أو لا.
-    String usernameText=username.getText().toString();
+    boolean flag=true;//المتغير بيحدد إذا البيانات صحيحة أو لا.ببلش انه صح واذا لقنا خطأ بنقلبه لfalse
+    String usernameText=username.getText().toString();// سحب النصوص بياخذ الحكي الي كتبه المستخدم بالedittext وبحوله لنص
     String passwordText=TextPassword.getText().toString();
 
-    if(usernameText.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(usernameText).matches()){
-        username.setError("Invalid username");
+    if(usernameText.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(usernameText).matches()){// او اذا لا يشبه الايميل الحقيقي بفحص اذا حقل الايميل فارغ
+        username.setError("Invalid username");//اذا كان غلط بيطلع رسالة انه غلط
         flag=false;
-
     }
-
-    if(passwordText.isEmpty() || passwordText.length()<8){
-        TextPassword.setError("Password must be at least 8 characters");
+    if(passwordText.isEmpty() || passwordText.length()<8){//نفس الاشي هون بفحص الباسورد
+        TextPassword.setError("Password must be at least 8 characters");//بطلع رسالة
         flag=false;
     }
     if(flag)
     {
         //إنشاء كائن Myuser
         Myuser myuser = new Myuser();
-        myuser.setEmail(usernameText);
+        myuser.setEmail(usernameText);//تعيين الايميل الذي ادخله المستخدم
         myuser.setPassword(passwordText);
         AppDatabase.getInstance(SignIn.this).myuserQuery().insertAll(myuser);//حفظه بقاعدة البيانات
         //كائن لعملية التسجيل
