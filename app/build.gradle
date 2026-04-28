@@ -49,6 +49,7 @@ dependencies {
     implementation libs.googleid
     implementation libs.firebase.database
     implementation libs.firebase.storage
+    implementation libs.firebase.ai
 
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit

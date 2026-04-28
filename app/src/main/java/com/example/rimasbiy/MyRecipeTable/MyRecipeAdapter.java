@@ -29,6 +29,7 @@ import androidx.appcompat.widget.PopupMenu;
 import com.example.rimasbiy.ListRecipes;
 import com.example.rimasbiy.R;
 import com.example.rimasbiy.RecipeReminderReceiver;
+import com.example.rimasbiy.SmartRecipeAssistant;
 import com.example.rimasbiy.userTable.MyService;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
@@ -126,17 +127,21 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.loveimageb)
-                {
+                if (item.getItemId() == R.id.loveimageb) {
                     //هنا نكتب رد فعل هذا العنصر من القائمة
                     Toast.makeText(MyRecipeAdapter.this.getContext(), "like", Toast.LENGTH_SHORT).show();
                     Intent i = new Intent(getContext(), ListRecipes.class);
                     getContext().startActivity(i);
+                }
+                    if (item.getItemId()==R.id.AI){
+                        Intent i=new Intent(getContext(), SmartRecipeAssistant.class);
+                    getContext().startActivity(i);}
+                    //to do
                     if (item.getItemId() == R.id.shareimageb)
                     {
                         Toast.makeText(MyRecipeAdapter.this.getContext(), "share", Toast.LENGTH_SHORT).show();
                     }
-                }
+
                 return true;
             }
         });
