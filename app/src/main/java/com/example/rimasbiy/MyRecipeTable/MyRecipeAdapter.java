@@ -65,6 +65,7 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
         ImageView cakeimg = vitem.findViewById(R.id.cakeimg);//ربط عناصر التصميم
         MaterialButton loveimageb = vitem.findViewById(R.id.loveimageb);
         MaterialButton shareimageb = vitem.findViewById(R.id.shareimageb);
+        MaterialButton AI=vitem.findViewById(R.id.AI);
         MaterialTextView nameCake = vitem.findViewById(R.id.nameCake);
         TextView disText = vitem.findViewById(R.id.disText);
         Recipe current = getItem(position);//هات الوصفة اللي رقمها position في القائمة.
@@ -87,7 +88,14 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
         loveimageb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDateTimePicker(current);
+                showDateTimePicker(current);// تذكير بعد فترة انه هاي الوصفة عجبتني
+            }
+        });
+        AI.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i=new Intent(getContext(), SmartRecipeAssistant.class);
+                getContext().startActivity(i);
             }
         });
         return vitem;//رجّع العنصر
