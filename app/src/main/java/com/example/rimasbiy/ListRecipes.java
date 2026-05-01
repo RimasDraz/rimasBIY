@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.rimasbiy.MyRecipeTable.MyRecipeAdapter;
 import com.example.rimasbiy.MyRecipeTable.Recipe;
-import com.example.rimasbiy.data.AppDatabase;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -20,8 +19,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.List;
 
 /**
  * מסך הצגת רשימת המתכונים.
@@ -122,25 +119,26 @@ public class ListRecipes extends AppCompatActivity {
      */
     private void loadAllRecipes() {
         group="recipes";
-        getAllFromFirebase(adapter);
+        getAllFromFirebase(adapter, null);//كبسة اظهار كل الوصفات
     }
     /**
      * פונקציה להצגת מועדפים בלבד.
      * دالة لعرض الوصفات المفضلة فقط.
      */
     private void showFavorites() {
-        group="favorites";
-        getAllFromFirebase(adapter);
+        String myId=FirebaseAuth.getInstance().getCurrentUser().getUid();
+        group="favorites"+myId;
+        getAllFromFirebase(adapter, null);//اذا كان فاضي بعرض كل اشي بالوصفات الي انا عملتلها save
     }
     /**
      * دالة لعرض وصفاتي فقط.
      */
     private void showMyRecipe(){
         String myId=FirebaseAuth.getInstance().getCurrentUser().getUid();
-        group="recipes/"+myId;
-        getAllFromFirebase(adapter);
+        group="recipes";
+        getAllFromFirebase(adapter,myId);//اخراج جميع الوصفات الي انا كتبتها بتم فحصها حسب الid الي الي
     }
-    private void getAllFromFirebase( MyRecipeAdapter adapter) {// جلب البيانات وعرضها في التطبيق
+    private void getAllFromFirebase(MyRecipeAdapter adapter, String myId) {// جلب البيانات وعرضها في التطبيق
         //عنوان قاعدة البيانات
         FirebaseDatabase database = FirebaseDatabase.getInstance();//تتصل بقاعدة البيانات
         // عنوان مجموعة المعطيات داخل قاعدة البيانات
@@ -155,7 +153,13 @@ public class ListRecipes extends AppCompatActivity {
                 for (DataSnapshot recipeSnapshot : snapshot.getChildren()) {// يتم استخدام الحلقة للمرور على كل "وصفة" موجودة تحت المسار recipe
                     //  استخراج كل المعطيات على وتحويلها لكائن ملائم//
                     Recipe recipe = recipeSnapshot.getValue(Recipe.class);// للحصول على كائن الوصفة, نستخدم السطر حيث يقوم ال Firebase بتحويلها تلقائيا لكائن java
+                   if(myId==null)
                     adapter.add(recipe);//اضافة كل معطى (كائن) للمنسق
+                    else
+                   {
+                       if(recipe.getOwner().equals(myId))
+                           adapter.add(recipe);//اضافة كل معطى (كائن) للمنسق
+                   }
                 }
                 adapter.notifyDataSetChanged();//اعلام المنسق بالتغيير
                 Toast.makeText(ListRecipes.this, "Data fetched successfully", Toast.LENGTH_SHORT).show();

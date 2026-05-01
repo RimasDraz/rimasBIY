@@ -1,8 +1,10 @@
 package com.example.rimasbiy.MyRecipeTable;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static android.view.View.GONE;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
@@ -33,6 +35,9 @@ import com.example.rimasbiy.SmartRecipeAssistant;
 import com.example.rimasbiy.userTable.MyService;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 // مكتبات معالجة الصور
 
@@ -66,6 +71,7 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
         MaterialButton loveimageb = vitem.findViewById(R.id.loveimageb);
         MaterialButton shareimageb = vitem.findViewById(R.id.shareimageb);
         MaterialButton AI=vitem.findViewById(R.id.AI);
+        MaterialButton Delete=vitem.findViewById(R.id.Delete);
         MaterialTextView nameCake = vitem.findViewById(R.id.nameCake);
         TextView disText = vitem.findViewById(R.id.disText);
         Recipe current = getItem(position);//هات الوصفة اللي رقمها position في القائمة.
@@ -83,6 +89,26 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
             @Override
             public void onClick(View view) {
                 openSendSmsApp(current.getName(), "");// אם יש טלפון המשימה מעבירים במקום ה ״״
+            }
+        });
+        String myId=FirebaseAuth.getInstance().getCurrentUser().getUid();///عملنا هاد الكود عشان ميمحاش وصفات مش الي
+        if (current.getOwner().equals( myId)==false)
+            Delete.setVisibility(GONE);
+
+        Delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showYesNoDialog(current);
+                    }
+                });
+
+
+
+
+
             }
         });
         loveimageb.setOnClickListener(new View.OnClickListener() {
@@ -118,43 +144,57 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
         //פתיחת אפליקציית ה סמס
         getContext().startActivity(smsIntent);
     }
-
-    /**
-     * دالة مساعدة لفتح قائمة تتلقى
-     * بارامتر للكائن الذي سبب فتح القائمة
-     *
-     * @param v
-     * @param Recipe
-     */
-    public void showPopUpMenu(View v, MyRecipeAdapter Recipe) {
-        // بناء قائمةPopUpMenu
-        PopupMenu popup = new PopupMenu(getContext(), v);
-        //ملف الثائمة
-        popup.inflate(R.menu.the_menu);
-        //اضافة معالج حدث لاختيار عنصر من القائمة
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.loveimageb) {
-                    //هنا نكتب رد فعل هذا العنصر من القائمة
-                    Toast.makeText(MyRecipeAdapter.this.getContext(), "like", Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(getContext(), ListRecipes.class);
-                    getContext().startActivity(i);
-                }
-                    if (item.getItemId()==R.id.AI){
-                        Intent i=new Intent(getContext(), SmartRecipeAssistant.class);
-                    getContext().startActivity(i);}
-                    //to do
-                    if (item.getItemId() == R.id.shareimageb)
-                    {
-                        Toast.makeText(MyRecipeAdapter.this.getContext(), "share", Toast.LENGTH_SHORT).show();
-                    }
-
-                return true;
-            }
-        });
-        popup.show();//فتح وعرض القائمة
+    private void showYesNoDialog(Recipe current) {
+        final Recipe recipe = current;
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("Are you sure you want to delete this recipe?")
+                .setPositiveButton("Yes", (dialog, id) -> {
+                    //تهيئة  Firebase Realtime Database // مؤشر لقاعدة البيانات
+                    DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+                    //مؤشر لجدول الوصفات
+                    DatabaseReference RecipesRef = database.child("recipes");// يمثل مؤشرا او مرحعا لمسار محدد في شجرة البيانات
+                    RecipesRef.child(current.getKey()).removeValue();                    })
+                .setNegativeButton("No", (dialog, id) -> dialog.cancel())
+                .create()
+                .show();
     }
+
+//    /**
+//     * دالة مساعدة لفتح قائمة تتلقى
+//     * بارامتر للكائن الذي سبب فتح القائمة
+//     *
+//     * @param v
+//     * @param Recipe
+//     */
+//    public void showPopUpMenu(View v, MyRecipeAdapter Recipe) {
+//        // بناء قائمةPopUpMenu
+//        PopupMenu popup = new PopupMenu(getContext(), v);
+//        //ملف الثائمة
+//        popup.inflate(R.menu.the_menu);
+//        //اضافة معالج حدث لاختيار عنصر من القائمة
+//        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                if (item.getItemId() == R.id.loveimageb) {
+//                    //هنا نكتب رد فعل هذا العنصر من القائمة
+//                    Toast.makeText(MyRecipeAdapter.this.getContext(), "like", Toast.LENGTH_SHORT).show();
+//                    Intent i = new Intent(getContext(), ListRecipes.class);
+//                    getContext().startActivity(i);
+//                }
+//                    if (item.getItemId()==R.id.AI){
+//                        Intent i=new Intent(getContext(), SmartRecipeAssistant.class);
+//                    getContext().startActivity(i);}
+//                    //to do
+//                    if (item.getItemId() == R.id.shareimageb)
+//                    {
+//                        Toast.makeText(MyRecipeAdapter.this.getContext(), "share", Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                return true;
+//            }
+//        });
+//        popup.show();//فتح وعرض القائمة
+//    }
     private void showDateTimePicker(Recipe current) {
         final Calendar currentDate = Calendar.getInstance();
         final Calendar date = Calendar.getInstance();
@@ -168,37 +208,54 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
                  selectedReminderTime = date.getTimeInMillis();// הזמן שנבחר במלישניות//
                 scheduleAlarm(current);
                 //save by service
-                Intent serviceIntent=new Intent(getContext(), MyService.class);
-                serviceIntent.putExtra("recipe_extra",current);
-                serviceIntent.putExtra("group","favorites");
-               getContext().startService(serviceIntent);
+                Intent serviceIntent=new Intent(getContext(), MyService.class);//يتم إنشاء Intent صريح لاستهداف كلاس اسمه MyService. هذا الكلاس هو المسؤول عن معالجة البيانات في الخلفية/
+                serviceIntent.putExtra("recipe_extra",current);//يتم إرسال كائن (Object) يمثل الوصفة الحالية.
+                String myId= FirebaseAuth.getInstance().getCurrentUser().getUid();//هنا يتم جلب الـ UID الخاص بالمستخدم الحالي من FirebaseAuth لبناء مسار فريد لكل مستخدم داخل عقدة الـ favorites في قاعدة البيانات
+                String group = "favorites/" + myId;
+                serviceIntent.putExtra("group",group);//يتم تمرير المسار الذي سيتم الحفظ فيه داخل قاعدة البيانات.
+               getContext().startService(serviceIntent);//يتم إرسال الأوامر للنظام لبدء تشغيل الخدمة. بمجرد استدعاء هذا السطر، سينتقل التنفيذ إلى دالة onStartCommand داخل كلاس MyService.
 
                 //todo add tv to show time
                 // tvReminderTime.setText(date.getTime().toString());//הצגת הזמן
+                ///الوظيفة: فتح واجهة اختيار التاريخ (DatePicker) متبوعة فوراً بواجهة اختيار الوقت (TimePicker).
+                ///يظهر تقويم للمستخدم لاختيار (السنة، الشهر، اليوم).
+                ///عند الضغط على "موافق"، يتم استدعاء "مستمع الأحداث" الذي يفتح تلقائياً واجهة تحديد (الساعة، الدقيقة).
+                ///يتم ضبط الحوارين ليبدآ من التاريخ والوقت الحاليين للجهاز باستخدام الكائن currentDate
+                ///تم ضبط false في نهاية الكود ليعرض الوقت بنظام 12 ساعة (AM/PM)./
             }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), false).show();
         }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
     }
-    //العمليية التي تشغل الوقت
+    ///ضبط منبه (Reminder) لوصفة معينة لإرسال إشعار للمستخدم في وقت محدد مسبقاً.
     private void scheduleAlarm(Recipe recipe) {
+        ////  الوصول إلى خدمة المنبهات في نظام الأندرويد
         AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
         //תזמון הפעלה של
         //RecipeReminderReceiver
+        ////  إنشاء Intent لتحديد المستلم (Receiver) الذي سيعالج التنبيه عند حدوثه
         Intent intent = new Intent(getContext(), RecipeReminderReceiver.class);
         //מעבירים את הנתונים לברודקסט רסיבר
-        intent.putExtra("title", recipe.getName());//
-        intent.putExtra("text", recipe.getDescription());//
+        ///  وضع اسم الوصفة داخل الـ Intent لإظهاره في عنوان الإشعار لاحقاً
+        intent.putExtra("title", recipe.getName());
+        ///  وضع وصف الوصفة داخل الـ Intent لإظهاره في نص الإشعار لاحقاً
+        intent.putExtra("text", recipe.getDescription());
         //הכנת אובייקט תיזמון
+        ///إنشاء PendingIntent: وهو تصريح للنظام بتنفيذ الـ Intent أعلاه في وقت مستقبلي
+        /// (ID) استخدمنا معرف الوصفة كرمز فريد لمنع تداخل التنبيهات المختلفة
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) recipe.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
+        //// التحقق من أن خدمة المنبهات متاحة
         if (alarmManager != null) {
-            //יוצרים לפי גרסת מערכת הטלפון
+            /// التعامل مع قيود إصدار أندرويد
+            // יוצרים לפי גרסת מערכת הטלפון
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                ///  إذا كان التطبيق يملك صلاحية المنبه الدقيق، يتم ضبطه ليعمل حتى في وضع السكون
                 if (alarmManager.canScheduleExactAlarms()) {
                     alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, selectedReminderTime, pendingIntent);
                 } else {
+                    /// . إذا لم تتوفر الصلاحية، يتم ضبط منبه عادي
                     alarmManager.set(AlarmManager.RTC_WAKEUP, selectedReminderTime, pendingIntent);
                 }
             } else {
+                ///  للإصدارات القديمة: ضبط المنبه بدقة تامة وبخاصية إيقاظ الجهاز
                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, selectedReminderTime, pendingIntent);
             }
         }
@@ -211,11 +268,15 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
      */
     //استرجاع الصورة من النص
     private Bitmap stringToBitmap(String imageString) {
+        ///  التحقق مما إذا كان النص فارغاً أو غير موجود لتجنب الأخطاء
         if (imageString == null || imageString.isEmpty()) return null;
         try {
+            ///  تحويل النص المشفر بصيغة Base64 إلى مصفوفة بايتات(byte array)
             byte[] decodedString = Base64.decode(imageString, Base64.DEFAULT);
+            ///  تحويل مصفوفة البايتات إلى كائن Bitmap(صورة) يمكن عرضه في التطبيق
             return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         } catch (Exception e) {
+            /// في حال حدوث أي خطأ أثناء التحويل(مثل نص غير صالح)، يتم إرجاع null
             return null;
         }
     }

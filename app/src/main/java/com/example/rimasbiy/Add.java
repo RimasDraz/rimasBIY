@@ -214,7 +214,7 @@ public class Add extends AppCompatActivity {
                     recipe.setIngredients(ingredients.getText().toString());
                     recipe.setInstructions(instructions.getText().toString());
                     recipe.setReminderTime(selectedReminderTime);
-                    recipe.setOwner(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                    recipe.setOwner(FirebaseAuth.getInstance().getCurrentUser().getUid());
                     //هذه الدالة يمكن استدعاؤها بعد استلام عنوان الصورة Uri وتحويلها لنص لحفظها في الصفة المخصصة لها في الكائن
                     if (selectedImageUri!=null)
                     {
@@ -226,7 +226,7 @@ public class Add extends AppCompatActivity {
                     AppDatabase.getInstance(this).myRecipeQuery().insert(recipe);
                     Toast.makeText(this, "Recipe saved successfully", Toast.LENGTH_SHORT).show();
                     //save via frirebase database
-                  saveRecipe(recipe);
+                    // saveRecipe(recipe);
                 //save by service
                     Intent serviceIntent=new Intent(this, MyService.class);//(Intent) لفتح الخدمة المسماة MyService. الخدمة تُستخدم عادةً لتنفيذ عمليات في الخلفية لا تحتاج لواجهة مستخدم.
                     serviceIntent.putExtra("recipe_extra",recipe);//مرير كائن الوصفة (recipe) إلى الخدمة حتى تعرف الخدمة أي وصفة ستقوم بمعالجتها.
@@ -305,6 +305,7 @@ public class Add extends AppCompatActivity {
         }
     }
     //حفظ الوصفة في Firebase Realtime Database
+    //غيتها لاني حفظت بالسيرفيس
     public void saveRecipe(Recipe recipe) {//في قاعدة البيانات "recipe" الحصول على مرجع الى عقدة
         //تهيئة  Firebase Realtime Database // مؤشر لقاعدة البيانات
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
@@ -376,7 +377,8 @@ public class Add extends AppCompatActivity {
         //RecipeReminderReceiver
         Intent intent = new Intent(this, RecipeReminderReceiver.class);//كلاس اسمه RecipeReminderReceiver. هذا الكلاس هو المسؤول عن إظهار الإشعار (Notification) عندما يحين الوقت.
         //מעבירים את הנתונים לברודקסט רסיבר
-        intent.putExtra("title", recipe.getName());//إرسال اسم الوصفة ووصفها إلى المنبه ليتم عرضهما داخل الإشعار لاحقاً.
+        ////إرسال اسم الوصفة ووصفها إلى المنبه ليتم عرضهما داخل الإشعار لاحقاً
+        intent.putExtra("title", recipe.getName());
         intent.putExtra("text", recipe.getDescription());
         //הכנת אובייקט תיזמון
         //تغليف الـ Intent داخل PendingIntent. هي بمثابة "تذكرة مؤجلة" نعطيها للنظام لينفذها في المستقبل حتى لو كان التطبيق مغلقاً.
