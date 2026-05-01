@@ -81,10 +81,6 @@ public class Add extends AppCompatActivity {
     private Uri selectedImageUri;//صفة لحفظ عنوان الصورة بعد اختيارها
     private ActivityResultLauncher<String> pickImage;// ‏كائن لطلب الصورة من الهاتف
     private Button button_select_image;// لاختيار الصورة
-    private Button btnSetReminder;//כפתור לפתיחת חלון בחירת הזמן
-    private long selectedReminderTime = 0;// הזמן שנבחר במלישניות
-    private TextView tvReminderTime;// להצגת הזמן שנבחר
-
     String TAG="FilePermission";//علامة مميزة (Tag) تستخدم لتعريف رسائل الخطأ (Logs) الخاصة بهذا الكلاس في الـ Logcat
 
     // مُشغّلات لطلب الأذونات
@@ -105,8 +101,6 @@ public class Add extends AppCompatActivity {
         instructions = findViewById(R.id.instructions);
         imagerecipe = findViewById(R.id.imagerecipe);
         button_select_image=findViewById(R.id.button_select_image);
-        tvReminderTime=findViewById(R.id.tvReminderTime);
-        btnSetReminder=findViewById(R.id.btnSetReminder);
         systemEventsReceiver=new AirPlaneReceiver(buttonsaverecipe);
 //        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
 //            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -167,7 +161,7 @@ public class Add extends AppCompatActivity {
             }
         });
 
-        btnSetReminder.setOnClickListener(v -> showDateTimePicker());//استدعاء إجراء عند النقر على زر btnSetReminder: (يتم الاستدعاء باستخدام دالة lamda السهمية <- هذا هو onClick)
+       // btnSetReminder.setOnClickListener(v -> showDateTimePicker());//استدعاء إجراء عند النقر على زر btnSetReminder: (يتم الاستدعاء باستخدام دالة lamda السهمية <- هذا هو onClick)
 
         checkAndRequestPermissions();//استدعاء دالة الأذونات
 
@@ -213,7 +207,6 @@ public class Add extends AppCompatActivity {
                     recipe.setDescription(description.getText().toString());
                     recipe.setIngredients(ingredients.getText().toString());
                     recipe.setInstructions(instructions.getText().toString());
-                    recipe.setReminderTime(selectedReminderTime);
                     recipe.setOwner(FirebaseAuth.getInstance().getCurrentUser().getUid());
                     //هذه الدالة يمكن استدعاؤها بعد استلام عنوان الصورة Uri وتحويلها لنص لحفظها في الصفة المخصصة لها في الكائن
                     if (selectedImageUri!=null)
@@ -233,7 +226,7 @@ public class Add extends AppCompatActivity {
                     serviceIntent.putExtra("group","recipes");//تمرير نص إضافي يحدد "المجموعة" (Group) لتنظيم البيانات داخل الخدمة.
                     startService(serviceIntent);//لأمر الفعلي لتشغيل الخدمة. هنا يبدأ نظام أندرويد بتنفيذ الأكواد الموجودة داخل كلاس MyService
                     finish();
-                    scheduleAlarm(recipe);//استدعاء دالة لبرمجة منبه أو تذكير خاص بهذه الوصفة (مثلاً لتذكير المستخدم بموعد الطبخ)، وذلك باستخدام الـAlarmManager
+                   // scheduleAlarm(recipe);//استدعاء دالة لبرمجة منبه أو تذكير خاص بهذه الوصفة (مثلاً لتذكير المستخدم بموعد الطبخ)، وذلك باستخدام الـAlarmManager
                 }
                 return flag;
             }
@@ -355,46 +348,46 @@ public class Add extends AppCompatActivity {
         unregisterReceiver(systemEventsReceiver);
     }
     /// دالة لإظهار اختيار التاريخ والوقت وحفظهما بصيغة الميلي ثانية
-    private void showDateTimePicker() {
-        final Calendar currentDate = Calendar.getInstance();//الحصول على الوقت والتاريخ الحاليين للجهاز لاستخدامهما كإعدادات افتراضية عند فتح النافذة.
-        final Calendar date = Calendar.getInstance();
-        //יצירת דיאלוג וטיפול באירוע הזמן שנבחר
-        new DatePickerDialog(this, (view, year, monthOfYear, dayOfMonth) -> {//אירוע בחירת הזמן
-            date.set(year, monthOfYear, dayOfMonth);
-            new TimePickerDialog(this, (view1, hourOfDay, minute) -> {
-                date.set(Calendar.HOUR_OF_DAY, hourOfDay);//הזמן שנבחר
-                date.set(Calendar.MINUTE, minute);
-                date.set(Calendar.SECOND, 0);
-                selectedReminderTime = date.getTimeInMillis();// הזמן שנבחר במלישניות
-                tvReminderTime.setText(date.getTime().toString());//הצגת הזמן
-            }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), false).show();
-        }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
-    }
-///دالة لبرمجة إشعار تذكيري للوصفة باستخدام مدير المنبهات في النظام
-    private void scheduleAlarm(Recipe recipe) {
-      AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);//استدعاء مدير المنبهات الخاص بنظام أندرويد
-        //תזמון הפעלה של
-        //RecipeReminderReceiver
-        Intent intent = new Intent(this, RecipeReminderReceiver.class);//كلاس اسمه RecipeReminderReceiver. هذا الكلاس هو المسؤول عن إظهار الإشعار (Notification) عندما يحين الوقت.
-        //מעבירים את הנתונים לברודקסט רסיבר
-        ////إرسال اسم الوصفة ووصفها إلى المنبه ليتم عرضهما داخل الإشعار لاحقاً
-        intent.putExtra("title", recipe.getName());
-        intent.putExtra("text", recipe.getDescription());
-        //הכנת אובייקט תיזמון
-        //تغليف الـ Intent داخل PendingIntent. هي بمثابة "تذكرة مؤجلة" نعطيها للنظام لينفذها في المستقبل حتى لو كان التطبيق مغلقاً.
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int) recipe.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-        if (alarmManager != null) {
-            //יוצרים לפי גרסת מערכת הטלפון
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                if (alarmManager.canScheduleExactAlarms()) {
-                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, selectedReminderTime, pendingIntent);//ضبط المنبه ليعمل في الوقت المحدد تماماً، حتى لو كان الهاتف في "وضع السكون"
-                } else {
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, selectedReminderTime, pendingIntent);
-                }
-            } else {
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, selectedReminderTime, pendingIntent);
-            }
-        }
-    }
+//    private void showDateTimePicker() {
+//        final Calendar currentDate = Calendar.getInstance();//الحصول على الوقت والتاريخ الحاليين للجهاز لاستخدامهما كإعدادات افتراضية عند فتح النافذة.
+//        final Calendar date = Calendar.getInstance();
+//        //יצירת דיאלוג וטיפול באירוע הזמן שנבחר
+//        new DatePickerDialog(this, (view, year, monthOfYear, dayOfMonth) -> {//אירוע בחירת הזמן
+//            date.set(year, monthOfYear, dayOfMonth);
+//            new TimePickerDialog(this, (view1, hourOfDay, minute) -> {
+//                date.set(Calendar.HOUR_OF_DAY, hourOfDay);//הזמן שנבחר
+//                date.set(Calendar.MINUTE, minute);
+//                date.set(Calendar.SECOND, 0);
+//                selectedReminderTime = date.getTimeInMillis();// הזמן שנבחר במלישניות
+//                tvReminderTime.setText(date.getTime().toString());//הצגת הזמן
+//            }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), false).show();
+//        }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
+//    }
+/////دالة لبرمجة إشعار تذكيري للوصفة باستخدام مدير المنبهات في النظام
+//    private void scheduleAlarm(Recipe recipe) {
+//      AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);//استدعاء مدير المنبهات الخاص بنظام أندرويد
+//        //תזמון הפעלה של
+//        //RecipeReminderReceiver
+//        Intent intent = new Intent(this, RecipeReminderReceiver.class);//كلاس اسمه RecipeReminderReceiver. هذا الكلاس هو المسؤول عن إظهار الإشعار (Notification) عندما يحين الوقت.
+//        //מעבירים את הנתונים לברודקסט רסיבר
+//        ////إرسال اسم الوصفة ووصفها إلى المنبه ليتم عرضهما داخل الإشعار لاحقاً
+//        intent.putExtra("title", recipe.getName());
+//        intent.putExtra("text", recipe.getDescription());
+//        //הכנת אובייקט תיזמון
+//        //تغليف الـ Intent داخل PendingIntent. هي بمثابة "تذكرة مؤجلة" نعطيها للنظام لينفذها في المستقبل حتى لو كان التطبيق مغلقاً.
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int) recipe.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+//
+//        if (alarmManager != null) {
+//            //יוצרים לפי גרסת מערכת הטלפון
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+//                if (alarmManager.canScheduleExactAlarms()) {
+//                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, selectedReminderTime, pendingIntent);//ضبط المنبه ليعمل في الوقت المحدد تماماً، حتى لو كان الهاتف في "وضع السكون"
+//                } else {
+//                    alarmManager.set(AlarmManager.RTC_WAKEUP, selectedReminderTime, pendingIntent);
+//                }
+//            } else {
+//                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, selectedReminderTime, pendingIntent);
+//            }
+//        }
+//    }
 }

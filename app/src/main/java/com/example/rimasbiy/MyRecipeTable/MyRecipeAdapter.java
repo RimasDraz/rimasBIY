@@ -144,6 +144,7 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
         //פתיחת אפליקציית ה סמס
         getContext().startActivity(smsIntent);
     }
+    /// اذا بدي ا`
     private void showYesNoDialog(Recipe current) {
         final Recipe recipe = current;
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());

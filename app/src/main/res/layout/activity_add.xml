@@ -115,26 +115,7 @@
                     android:scaleType="centerCrop"
                     app:srcCompat="@android:drawable/ic_menu_gallery" />
 
-                <TextView
-                    android:id="@+id/tvReminderTime"
-                    android:layout_width="171dp"
-                    android:layout_height="44dp"
-                    android:text="No reminder set"
-                    android:textColor="#232121"
-                    android:textSize="14sp"
-                    tools:ignore="MissingConstraints" />
-
             </LinearLayout>
-
-            <Button
-                android:id="@+id/btnSetReminder"
-                android:layout_width="166dp"
-                android:layout_height="53dp"
-                android:layout_marginBottom="92dp"
-                android:backgroundTint="#E6B1B1"
-                android:text="Set Reminder"
-                android:textColor="#100F0F"
-                tools:ignore="MissingConstraints" />
 
             <Button
                 android:id="@+id/button_select_image"
