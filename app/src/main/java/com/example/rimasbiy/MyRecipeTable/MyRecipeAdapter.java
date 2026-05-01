@@ -212,7 +212,7 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
                 Intent serviceIntent=new Intent(getContext(), MyService.class);//يتم إنشاء Intent صريح لاستهداف كلاس اسمه MyService. هذا الكلاس هو المسؤول عن معالجة البيانات في الخلفية/
                 serviceIntent.putExtra("recipe_extra",current);//يتم إرسال كائن (Object) يمثل الوصفة الحالية.
                 String myId= FirebaseAuth.getInstance().getCurrentUser().getUid();//هنا يتم جلب الـ UID الخاص بالمستخدم الحالي من FirebaseAuth لبناء مسار فريد لكل مستخدم داخل عقدة الـ favorites في قاعدة البيانات
-                String group = "favorites/" + myId;
+                String group = "favorites_" + myId;
                 serviceIntent.putExtra("group",group);//يتم تمرير المسار الذي سيتم الحفظ فيه داخل قاعدة البيانات.
                getContext().startService(serviceIntent);//يتم إرسال الأوامر للنظام لبدء تشغيل الخدمة. بمجرد استدعاء هذا السطر، سينتقل التنفيذ إلى دالة onStartCommand داخل كلاس MyService.
 

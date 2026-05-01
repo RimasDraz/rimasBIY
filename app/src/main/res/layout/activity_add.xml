@@ -117,15 +117,6 @@
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/button_select_image"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:backgroundTint="#E6B1B1"
-                android:text="Select Image"
-                android:textColor="#1B1A1A" />
-
         </LinearLayout>
     </ScrollView>
 

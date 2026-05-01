@@ -80,7 +80,6 @@ public class Add extends AppCompatActivity {
    // private ImageView ivSelectedImage; //صفة كمؤشر لهذا الكائن
     private Uri selectedImageUri;//صفة لحفظ عنوان الصورة بعد اختيارها
     private ActivityResultLauncher<String> pickImage;// ‏كائن لطلب الصورة من الهاتف
-    private Button button_select_image;// لاختيار الصورة
     String TAG="FilePermission";//علامة مميزة (Tag) تستخدم لتعريف رسائل الخطأ (Logs) الخاصة بهذا الكلاس في الـ Logcat
 
     // مُشغّلات لطلب الأذونات
@@ -100,7 +99,6 @@ public class Add extends AppCompatActivity {
         ingredients = findViewById(R.id.ingredients);
         instructions = findViewById(R.id.instructions);
         imagerecipe = findViewById(R.id.imagerecipe);
-        button_select_image=findViewById(R.id.button_select_image);
         systemEventsReceiver=new AirPlaneReceiver(buttonsaverecipe);
 //        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
 //            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());

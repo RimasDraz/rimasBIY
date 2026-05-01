@@ -66,7 +66,6 @@ public class ListRecipes extends AppCompatActivity {
             } else if (itemId == R.id.nav_logout) {
                 // יציאה וחזרה למסך התחברות - تسجيل الخروج والعودة للبداية
                 showYesNoDialog();
-
                 return true;
             } else if (itemId == R.id.nav_myrecipes) {
                 showMyRecipe();
@@ -127,7 +126,7 @@ public class ListRecipes extends AppCompatActivity {
      */
     private void showFavorites() {
         String myId=FirebaseAuth.getInstance().getCurrentUser().getUid();
-        group="favorites"+myId;
+        group="favorites_"+myId;
         getAllFromFirebase(adapter, null);//اذا كان فاضي بعرض كل اشي بالوصفات الي انا عملتلها save
     }
     /**
