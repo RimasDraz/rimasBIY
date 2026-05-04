@@ -60,7 +60,7 @@ private TextView textVi;//E-mail
     FirebaseAuth auth=FirebaseAuth.getInstance();//تفعيل نظام المستخدمين في التطبيق عشان اقدر اطلب من الفير بيس معلومات عن الشخص االلي فاتح التطبيق
     if(auth.getCurrentUser()!=null)//يسال التطبيق اذا كان هناك تسجيل دخول مسبق
     {
-        Intent i= new Intent(SignIn.this,ListRecipes.class);//اذا كانت الاجابة نعم يتم نقله فورا لشاشد الوصفات دون الحاجة لكتابة الايميل والباسورد كمان مرة
+        Intent i= new Intent(SignIn.this,ListRecipes.class);//اذا كانت الاجابة نعم يتم نقله فورا لشاشة الوصفات دون الحاجة لكتابة الايميل والباسورد كمان مرة
         startActivity(i);//الامر الفعلي الذي يفتح الشاشة االي بدنا ننقل عليها
         finish();// تغلق الشاشة عشان ميرجعش عليها المستخدم
     }

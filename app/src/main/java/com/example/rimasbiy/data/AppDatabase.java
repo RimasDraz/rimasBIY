@@ -12,6 +12,7 @@ import com.example.rimasbiy.MyRecipeTable.Recipe;
 import com.example.rimasbiy.userTable.Myuser;
 import com.example.rimasbiy.userTable.MyuserQuery;
 @Entity
+// إذا قررت مستقبلاً إضافة عمود جديد (مثلاً إضافة "وقت التحضير" لجدول الوصفات)، لن يفهم أندرويد أن الهيكل تغير إلا إذا قمت بزيادة هذا الرقم (مثلاً من 5 إلى 6). version = 5 (رقم الإصدار)
     @Database(entities = {Myuser.class, Recipe.class}, version = 5) //السطر الذي يجدد اسم قاعدة البيانات
 /**
  * االفئة المسؤولة عن بناء قاعدة البيانات بكل جداولها
@@ -26,9 +27,10 @@ import com.example.rimasbiy.userTable.MyuserQuery;
          * يعيد كائن لعمليات جدول المستعملين
          * @return
          */
+        //هذه الدوال هي "البوابات". عندما تريد إضافة مستخدم أو حذف وصفة، ستنادي هذه الدوال لتعطيك الصلاحيات التي برمجتها داخل كلاسات الـ Query
         public abstract MyuserQuery myuserQuery();
     /**
-     * يعيد كائن لعمليات جدول المهام
+     يعيد كائن لعمليات جدول الوصفات
      * @return
      */
     public abstract MyRecipeQuery myRecipeQuery();

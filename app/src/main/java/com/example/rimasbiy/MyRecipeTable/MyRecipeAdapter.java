@@ -74,9 +74,10 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
         MaterialButton Delete=vitem.findViewById(R.id.Delete);
         MaterialTextView nameCake = vitem.findViewById(R.id.nameCake);
         TextView disText = vitem.findViewById(R.id.disText);
+        //current هو الوعاء الذي يحمل بيانات الوصفة التي حان دورها لتظهر أمام المستخدم حالاً.
+        //current هو كائن (Object) من نوع Recipe.  "current" لأنه يمثل "الوصفة الحالية" التي يقوم الـ Adapter برسمها الآن على الشاشة.
         Recipe current = getItem(position);//هات الوصفة اللي رقمها position في القائمة.
         cakeimg.setImageBitmap(stringToBitmap(current.getImage()));
-
         /**
          * عرض المعطيات على حقول الرسم
          */
@@ -85,6 +86,7 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
         //لسطر الواحد في الـ ListView --> الvitem
         //يعني الشكل اللي بيمثل وصفة وحدة (اسم + وصف + صورة)
 
+//عالج حدث النقرة (Click Listener) لزر مشاركة الصورة (shareimageb
         shareimageb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,7 +94,7 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
             }
         });
         String myId=FirebaseAuth.getInstance().getCurrentUser().getUid();///عملنا هاد الكود عشان ميمحاش وصفات مش الي
-        if (current.getOwner().equals( myId)==false)
+        if (current.getOwner().equals(myId)==false)
             Delete.setVisibility(GONE);
 
         Delete.setOnClickListener(new View.OnClickListener() {
@@ -104,17 +106,13 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
                         showYesNoDialog(current);
                     }
                 });
-
-
-
-
-
             }
         });
+        ///current كائن الوصفة الحالية التي سيتم ضبط التذكير لها
         loveimageb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDateTimePicker(current);// تذكير بعد فترة انه هاي الوصفة عجبتني
+                showDateTimePicker(current);/// تذكير بعد فترة انه هاي الوصفة عجبتني
             }
         });
         AI.setOnClickListener(new View.OnClickListener() {
@@ -124,7 +122,7 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
                 getContext().startActivity(i);
             }
         });
-        return vitem;//رجّع العنصر
+        return vitem;///رجّع العنصر
     }
 
     /**
@@ -144,23 +142,23 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
         //פתיחת אפליקציית ה סמס
         getContext().startActivity(smsIntent);
     }
-    /// اذا بدي ا`
+    ///اذا بدي اطلع من الحساب او لا`
     private void showYesNoDialog(Recipe current) {
         final Recipe recipe = current;
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage("Are you sure you want to delete this recipe?")
                 .setPositiveButton("Yes", (dialog, id) -> {
-                    //تهيئة  Firebase Realtime Database // مؤشر لقاعدة البيانات
+                    ///تهيئة  Firebase Realtime Database // مؤشر لقاعدة البيانات
                     DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-                    //مؤشر لجدول الوصفات
-                    DatabaseReference RecipesRef = database.child("recipes");// يمثل مؤشرا او مرحعا لمسار محدد في شجرة البيانات
+                    ///مؤشر لجدول الوصفات
+                    DatabaseReference RecipesRef = database.child("recipes");/// يمثل مؤشرا او مرحعا لمسار محدد في شجرة البيانات
                     RecipesRef.child(current.getKey()).removeValue();                    })
                 .setNegativeButton("No", (dialog, id) -> dialog.cancel())
                 .create()
                 .show();
     }
 
-//    /**
+//    //**
 //     * دالة مساعدة لفتح قائمة تتلقى
 //     * بارامتر للكائن الذي سبب فتح القائمة
 //     *
@@ -212,12 +210,10 @@ public class MyRecipeAdapter extends ArrayAdapter<Recipe> {
                 Intent serviceIntent=new Intent(getContext(), MyService.class);//يتم إنشاء Intent صريح لاستهداف كلاس اسمه MyService. هذا الكلاس هو المسؤول عن معالجة البيانات في الخلفية/
                 serviceIntent.putExtra("recipe_extra",current);//يتم إرسال كائن (Object) يمثل الوصفة الحالية.
                 String myId= FirebaseAuth.getInstance().getCurrentUser().getUid();//هنا يتم جلب الـ UID الخاص بالمستخدم الحالي من FirebaseAuth لبناء مسار فريد لكل مستخدم داخل عقدة الـ favorites في قاعدة البيانات
-                String group = "favorites_" + myId;
+                String group = "favorites_" + myId;///ذا السطر يقوم بإنشاء اسم فريد للمجموعة (ID) التي سيتم تخزين الوصفة تحتها. هو يدمج كلمة ثابتة وهي _favorites مع المعرف الخاص بالمستخدم myId.
                 serviceIntent.putExtra("group",group);//يتم تمرير المسار الذي سيتم الحفظ فيه داخل قاعدة البيانات.
                getContext().startService(serviceIntent);//يتم إرسال الأوامر للنظام لبدء تشغيل الخدمة. بمجرد استدعاء هذا السطر، سينتقل التنفيذ إلى دالة onStartCommand داخل كلاس MyService.
 
-                //todo add tv to show time
-                // tvReminderTime.setText(date.getTime().toString());//הצגת הזמן
                 ///الوظيفة: فتح واجهة اختيار التاريخ (DatePicker) متبوعة فوراً بواجهة اختيار الوقت (TimePicker).
                 ///يظهر تقويم للمستخدم لاختيار (السنة، الشهر، اليوم).
                 ///عند الضغط على "موافق"، يتم استدعاء "مستمع الأحداث" الذي يفتح تلقائياً واجهة تحديد (الساعة، الدقيقة).

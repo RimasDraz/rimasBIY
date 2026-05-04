@@ -13,13 +13,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:text="Smart Task Assistant"
+        android:text="Smart Recipe Assistant"
         android:textSize="24sp"
         android:textStyle="bold" />
 
 
     <EditText
-        android:id="@+id/etTaskTopic"
+        android:id="@+id/etRecipeTopic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter task title or topic (e.g., Fix the car)"
@@ -48,16 +48,16 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="16dp"
+        android:layout_weight="1">
 
 
         <TextView
             android:id="@+id/tvAiResponse"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textIsSelectable="true" />
+            android:textIsSelectable="true"
+            android:textSize="16sp" />
     </ScrollView>
 
 

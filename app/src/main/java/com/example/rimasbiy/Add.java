@@ -61,9 +61,9 @@ import android.net.Uri;
 
 public class Add extends AppCompatActivity {
 
-    //إنشاء طلب إذن
+    ///إنشاء طلب إذن
     private final ActivityResultLauncher<String> requestNotificationPermissionLauncher = registerForActivityResult( new ActivityResultContracts.RequestPermission(),
-            isGranted -> {//  بطريقة lamdaاذا اعطى المستخدم اذن
+            isGranted -> {///  بطريقة lamdaاذا اعطى المستخدم اذن
                 if (!isGranted) {
                     Toast.makeText(this, "Notification permission denied", Toast.LENGTH_SHORT).show();
                 }
@@ -144,18 +144,19 @@ public class Add extends AppCompatActivity {
 // Initialize the ActivityResultLauncher for picking imagesتهيئة مُشغّل نتائج النشاط لاختيار الصور
         pickImage = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
             @Override
+            /// دالة onActivityResult هي "المستقبل" الذي ينتظر عودة البيانات بعد أن يقوم التطبيق بفتح شيء خارجي (مثل معرض الصور أو الكاميرا).
             public void onActivityResult(Uri result) {
                 if (result != null) {
-                    selectedImageUri = result;//حفظ مسار الصورة في متفير لاستعماله بعدين
-                    imagerecipe.setImageURI(result);//عرض الصورة الموجودة في الشاشة
-                    imagerecipe.setVisibility(View.VISIBLE);//تاكد انه الصورة موحودة
+                    selectedImageUri = result;///حفظ مسار الصورة في متفير لاستعماله بعدين
+                    imagerecipe.setImageURI(result);///عرض الصورة الموجودة في الشاشة
+                    imagerecipe.setVisibility(View.VISIBLE);///تاكد انه الصورة موحودة
                 }
             }
         });
-        imagerecipe.setOnClickListener(new View.OnClickListener() {//لما ينكبس على الـ ImageView نفّذ الكود اللي جواته
+        imagerecipe.setOnClickListener(new View.OnClickListener() {///لما ينكبس على الـ ImageView نفّذ الكود اللي جواته
             @Override
-            public void onClick(View v) {//هاي الدالة اللي بتشتغل عند الضغط.
-                pickImage.launch("image/*"); // Launch the image picker(اختار أي نوع ملف من نوع صورة/*)
+            public void onClick(View v) {///هاي الدالة اللي بتشتغل عند الضغط.
+                pickImage.launch("image/*"); /// Launch the image picker(اختار أي نوع ملف من نوع صورة/*)
             }
         });
 
@@ -163,14 +164,14 @@ public class Add extends AppCompatActivity {
 
         checkAndRequestPermissions();//استدعاء دالة الأذونات
 
-        //تفعيل طلب الإذن
+        ///تفعيل طلب الإذن
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
             }
         }
     }
-//فحص إذا كل الحقول معبّاية.
+///فحص إذا كل الحقول معبّاية.
             private boolean validateFields () {
                 boolean flag = true;
 
@@ -197,19 +198,19 @@ public class Add extends AppCompatActivity {
                     /**
                      بناء كائن
                      */
-                    Recipe recipe = new Recipe();//إنشاء كائن Recipe
+                    Recipe recipe = new Recipe();///إنشاء كائن Recipe
                     /**
                      *استخراج القيم من الصفات واعطائها للحقولا
                      */
-                    recipe.setName(recipename.getText().toString());//عبي القيم داخله
+                    recipe.setName(recipename.getText().toString());///عبي القيم داخله
                     recipe.setDescription(description.getText().toString());
                     recipe.setIngredients(ingredients.getText().toString());
                     recipe.setInstructions(instructions.getText().toString());
                     recipe.setOwner(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    //هذه الدالة يمكن استدعاؤها بعد استلام عنوان الصورة Uri وتحويلها لنص لحفظها في الصفة المخصصة لها في الكائن
+                    ///هذه الدالة يمكن استدعاؤها بعد استلام عنوان الصورة Uri وتحويلها لنص لحفظها في الصفة المخصصة لها في الكائن
                     if (selectedImageUri!=null)
                     {
-                        //تحويل الصورة وحفظها
+                        ///تحويل الصورة وحفظها
                         recipe.setImage(convertImageToString(selectedImageUri));                    }
                     /**
                      * ادخال البيانات في قاعدة البيانات
@@ -219,19 +220,19 @@ public class Add extends AppCompatActivity {
                     //save via frirebase database
                     // saveRecipe(recipe);
                 //save by service
-                    Intent serviceIntent=new Intent(this, MyService.class);//(Intent) لفتح الخدمة المسماة MyService. الخدمة تُستخدم عادةً لتنفيذ عمليات في الخلفية لا تحتاج لواجهة مستخدم.
-                    serviceIntent.putExtra("recipe_extra",recipe);//مرير كائن الوصفة (recipe) إلى الخدمة حتى تعرف الخدمة أي وصفة ستقوم بمعالجتها.
-                    serviceIntent.putExtra("group","recipes");//تمرير نص إضافي يحدد "المجموعة" (Group) لتنظيم البيانات داخل الخدمة.
-                    startService(serviceIntent);//لأمر الفعلي لتشغيل الخدمة. هنا يبدأ نظام أندرويد بتنفيذ الأكواد الموجودة داخل كلاس MyService
+                    Intent serviceIntent=new Intent(this, MyService.class);///(Intent) لفتح الخدمة المسماة MyService. الخدمة تُستخدم عادةً لتنفيذ عمليات في الخلفية لا تحتاج لواجهة مستخدم.
+                    serviceIntent.putExtra("recipe_extra",recipe);///مرير كائن الوصفة (recipe) إلى الخدمة حتى تعرف الخدمة أي وصفة ستقوم بمعالجتها.
+                    serviceIntent.putExtra("group","recipes");///تمرير نص إضافي يحدد "المجموعة" (Group) لتنظيم البيانات داخل الخدمة.
+                    startService(serviceIntent);///لأمر الفعلي لتشغيل الخدمة. هنا يبدأ نظام أندرويد بتنفيذ الأكواد الموجودة داخل كلاس MyService
                     finish();
                    // scheduleAlarm(recipe);//استدعاء دالة لبرمجة منبه أو تذكير خاص بهذه الوصفة (مثلاً لتذكير المستخدم بموعد الطبخ)، وذلك باستخدام الـAlarmManager
                 }
                 return flag;
             }
-    private void checkAndRequestPermissions() {//تفحص إذا التطبيق عنده إذن قراءة الصور
-        // فحص وطلب إذن READ_MEDIA_IMAGES (للإصدارات الحديثة)
-        //إذا الإذن مش موجود → تطلبه
-        //إذا موجود → تطبع رسالة إنه موجود
+    private void checkAndRequestPermissions() {///تفحص إذا التطبيق عنده إذن قراءة الصور
+        /// فحص وطلب إذن READ_MEDIA_IMAGES (للإصدارات الحديثة)
+        ///إذا الإذن مش موجود → تطلبه
+        ///إذا موجود → تطبع رسالة إنه موجود
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_MEDIA_IMAGES)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -241,7 +242,7 @@ public class Add extends AppCompatActivity {
                 Toast.makeText(this, "إذن قراءة الصور ممنوح بالفعل", Toast.LENGTH_SHORT).show();
             }
 //        });
-//بنخليه يراقب العنصر، وأول ما المستخدم يضغط → ينفّذ كود معيّن.
+///بنخليه يراقب العنصر، وأول ما المستخدم يضغط → ينفّذ كود معيّن.
             buttonsaverecipe.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -270,32 +271,32 @@ public class Add extends AppCompatActivity {
 //*
 //* @param uri The Uri of the image to convert.
 //* @return The Base64 string representation of the image.
-    // تخزينه بسهولة في قاعدة البيانات. تحويل الصورة لنص
+    /// تخزينه بسهولة في قاعدة البيانات. تحويل الصورة لنص
     public String convertImageToString(Uri uri) {
         InputStream inputStream = null;
         String imageString = null;
-        // تحتوي هذه الدالة على وظيفة تحويل الصورة من مكان التخزين المؤقت إلى نص بنموذج Base64 ليتم تخزينه في قاعدة البيانات، وهذا يتيح للبرنامج عرض الصورة من قاعدة البيانات في وقت لاحق بدون الحاجة إلى فتح الصورة من جهاز المستخدم.
+        /// تحتوي هذه الدالة على وظيفة تحويل الصورة من مكان التخزين المؤقت إلى نص بنموذج Base64 ليتم تخزينه في قاعدة البيانات، وهذا يتيح للبرنامج عرض الصورة من قاعدة البيانات في وقت لاحق بدون الحاجة إلى فتح الصورة من جهاز المستخدم.
         try {
-            inputStream = getContentResolver().openInputStream(uri);//فتح قناة اتصال (Stream) لقراءة البيانات الخام للصورة من العنوان (uri) الذي اختاره المستخدم من معرض الصور.
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);//تحويل البيانات المقروءة إلى كائن Bitmap، وهو التنسيق الذي يتعامل معه أندرويد لعرض ومعالجة الصور برمجياً.
+            inputStream = getContentResolver().openInputStream(uri);///فتح قناة اتصال (Stream) لقراءة البيانات الخام للصورة من العنوان (uri) الذي اختاره المستخدم من معرض الصور.
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);///تحويل البيانات المقروءة إلى كائن Bitmap، وهو التنسيق الذي يتعامل معه أندرويد لعرض ومعالجة الصور برمجياً.
             if (bitmap == null) {
                 Toast.makeText(this, "Failed to process image", Toast.LENGTH_SHORT).show();
                 return null;
             }
             // Compress image to keep Base64 string within reasonable limit
-            //ضغط الصورة وتحويلها إلى صيغة JPEG بجودة 40%. هذه الخطوة ضرورية جداً لتقليل حجم النص الناتج، لأن قواعد البيانات لها حدود في استيعاب النصوص الطويلة جداً.
+            ///ضغط الصورة وتحويلها إلى صيغة JPEG بجودة 40%. هذه الخطوة ضرورية جداً لتقليل حجم النص الناتج، لأن قواعد البيانات لها حدود في استيعاب النصوص الطويلة جداً.
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 40, outputStream);
-            byte[] imageBytes = outputStream.toByteArray();//تحويل الصورة المضغوطة إلى مصفوفة من البايتات (Bytes) تمهيداً لتشفيرها
+            byte[] imageBytes = outputStream.toByteArray();// الصورة المضغوطة إلى مصفوفة من البايتات (Bytes) تمهيداً لتشفيرها
             imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);//تحويل مصفوفة البايتات إلى نص بنظام Base64. هذا النص هو ما سيتم إرساله وتخزينه في Firebase.
             return imageString;
         }
-        catch (FileNotFoundException e) {//التوثيق: التقاط الخطأ في حال عدم العثور على ملف الصورة في المسار المحدد (Uri)
+        catch (FileNotFoundException e) {//ا التقاط الخطأ في حال عدم العثور على ملف الصورة في المسار المحدد (Uri)
             Toast.makeText(this, "Failed file not found", Toast.LENGTH_SHORT).show();//إظهار رسالة تنبيه للمستخدم تخبره أن "الملف غير موجود"، لكي يفهم لماذا لم يتم رفع الصورة.
             throw new RuntimeException(e);//رمي خطأ برمجياً لإيقاف التنفيذ.
         }
     }
-    //حفظ الوصفة في Firebase Realtime Database
+    ///حفظ الوصفة في Firebase Realtime Database
     //غيتها لاني حفظت بالسيرفيس
     public void saveRecipe(Recipe recipe) {//في قاعدة البيانات "recipe" الحصول على مرجع الى عقدة
         //تهيئة  Firebase Realtime Database // مؤشر لقاعدة البيانات
@@ -330,7 +331,7 @@ public class Add extends AppCompatActivity {
                     }
                 });
     }
-    // 2. قم بتسجيله في onStart (عندما يصبح النشاط مرئيًا)
+    //  قم بتسجيله في onStart (عندما يصبح النشاط مرئيًا)
     @Override
     protected void onStart() {
         super.onStart();
@@ -342,7 +343,7 @@ public class Add extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        // 3. قم بإلغاء تسجيله في onStop (عندما يصبح النشاط غير مرئي)
+        //. قم بإلغاء تسجيله في onStop (عندما يصبح النشاط غير مرئي)
         unregisterReceiver(systemEventsReceiver);
     }
     /// دالة لإظهار اختيار التاريخ والوقت وحفظهما بصيغة الميلي ثانية

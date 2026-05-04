@@ -11,9 +11,6 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 
 import com.google.common.util.concurrent.FutureCallback;
@@ -32,7 +29,7 @@ public class SmartRecipeAssistant extends AppCompatActivity {
     private GenerativeModelFutures model;
     private TextView tvSmartid;
     private Button btnSuggestSteps;
-    private EditText etTaskTopic;
+    private EditText etRecipeTopic;
     private TextView tvAiResponse;
     private ProgressBar pbLoading;
 
@@ -44,7 +41,7 @@ public class SmartRecipeAssistant extends AppCompatActivity {
         setContentView(R.layout.activity_smart_recipe_assistant);
         btnSuggestSteps = findViewById(R.id.btnSuggestSteps);
         tvSmartid = findViewById(R.id.tvSmartid);
-        etTaskTopic = findViewById(R.id.etTaskTopic);
+        etRecipeTopic = findViewById(R.id.etRecipeTopic);
         tvAiResponse = findViewById(R.id.tvAiResponse);
         pbLoading = findViewById(R.id.pbLoading);
         //تهيئة خدمة الواجهة الخلفية (Backend) الخاصة ببرمجية Gemini
@@ -57,13 +54,13 @@ public class SmartRecipeAssistant extends AppCompatActivity {
         model = GenerativeModelFutures.from(ai); //GenerativeModelFutures. هذا الكلاس هو الذي يضمن أن التطبيق لن يتجمد (Freeze) أثناء انتظار رد الذكاء الاصطناعي من الإنترنت.
 
 
-        String text = etTaskTopic.getText().toString();
+        String text = etRecipeTopic.getText().toString();
         btnSuggestSteps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 askFirebaseAiGeminiForRecipe(text);
                 // ضغط على الزر لضمان أخذ ما كتبه المستخدم فعلياً
-                String text = etTaskTopic.getText().toString().trim();
+                String text = etRecipeTopic.getText().toString().trim();
 
                 if (text.isEmpty()) {
                     Toast.makeText(SmartRecipeAssistant.this, "Please enter a recipe name", Toast.LENGTH_SHORT).show();

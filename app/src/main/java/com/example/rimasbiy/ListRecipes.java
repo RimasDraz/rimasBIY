@@ -37,34 +37,34 @@ public class ListRecipes extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_recipes);
 
-        // אתחול רכיבי הממשק - تهيئة عناصر الواجهة
+        /// אתחול רכיבי הממשק - تهيئة عناصر الواجهة
         lsViRecipes = findViewById(R.id.lsViRecipes);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
-        // הגדרת המתאם (Adapter) - استخدام التصميم الصحيح لكل عنصر في القائمة
+        /// הגדרת המתאם (Adapter) - استخدام التصميم الصحيح لكل عنصر في القائمة
         adapter = new MyRecipeAdapter(this, R.layout.recipe_item_layout);
         lsViRecipes.setAdapter(adapter);
 
-        // הגדרת מאזין לתפריט התחתון - إعداد مستمع لنقرات القائمة السفلية
+        /// הגדרת מאזין לתפריט התחתון - إعداد مستمع لنقرات القائمة السفلية
         setupBottomNavigation();
     }
-//معالجة حدث للقائمة السفلى
+///معالجة حدث للقائمة السفلى
     private void setupBottomNavigation() {
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
             if (itemId == R.id.nav_all) {
-                loadAllRecipes(); // הצגת הכל - عرض الكل
+                loadAllRecipes(); /// הצגת הכל - عرض الكل
                 return true;
             } else if (itemId == R.id.nav_favorites) {
-                showFavorites(); // הצגת מועדפים - عرض المفضلة
+                showFavorites(); /// הצגת מועדפים - عرض المفضلة
                 return true;
             } else if (itemId == R.id.nav_add) {
-                // מעבר למסך הוספה - الانتقال لشاشة الإضافة
+                /// מעבר למסך הוספה - الانتقال لشاشة الإضافة
                 startActivity(new Intent(ListRecipes.this, Add.class));
                 return true;
             } else if (itemId == R.id.nav_logout) {
-                // יציאה וחזרה למסך התחברות - تسجيل الخروج والعودة للبداية
+                /// יציאה וחזרה למסך התחברות - تسجيل الخروج والعودة للبداية
                 showYesNoDialog();
                 return true;
             } else if (itemId == R.id.nav_myrecipes) {
@@ -74,14 +74,14 @@ public class ListRecipes extends AppCompatActivity {
             return false;
         });
     }
-    //ظهور شاشة لتسجيل الدخول اذا بده يسجل دخول او لا
+    ///ظهور شاشة لتسجيل الخروج اذا بده يسجل خروج او لا
     public void showYesNoDialog()
     {
-        //تجهيز بناء شبكة حوار "ديالوغ" بتلقى برامتر مؤشر للنشاط الحالي
+        ///تجهيز بناء شبكة حوار "ديالوغ" بتلقى برامتر مؤشر للنشاط الحالي
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
-        builder.setTitle("Log Out");//تحديد العنوان
-        builder.setMessage("Are you sure?");//تحدي فحوى شباك الديالوغ
-        builder.setPositiveButton("yes", new DialogInterface.OnClickListener() {//اضافة زر مع اللسينر
+        builder.setTitle("Log Out");///تحديد العنوان
+        builder.setMessage("Are you sure?");///تحدي فحوى شباك الديالوغ
+        builder.setPositiveButton("yes", new DialogInterface.OnClickListener() {///اضافة زر مع اللسينر
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 //معالجة حدث للموافقة
@@ -91,24 +91,24 @@ public class ListRecipes extends AppCompatActivity {
                 finish();
             }
         });
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {///اضافة زر مع اللسينر
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Toast.makeText(ListRecipes.this,"signing out",Toast.LENGTH_SHORT).show();
 
             }
         });
-        AlertDialog dialog=builder.create();//بناء شباك الديالوغ
-        dialog.show();//عرض الشباك
+        AlertDialog dialog=builder.create();///بناء شباك الديالوغ
+        dialog.show();///عرض الشباك
     }
 
-    // بتشتغل عند فتح التطبيق بعد oncreat & onstart
-    //عند الرجوع للتطبيق اذا كنت تستعمل تطبيق اخر او بمحل ورجعت على التطبيق
-    //عن اغلاق الشاشة اذا ظهر ديالوج او اتصال هاتفي غطى الشاشة ثم اختفى برجع النشاط للدالة هاي
+    /// بتشتغل عند فتح التطبيق بعد oncreat & onstart
+    ///عند الرجوع للتطبيق اذا كنت تستعمل تطبيق اخر او بمحل ورجعت على التطبيق
+    ///عن اغلاق الشاشة اذا ظهر ديالوج او اتصال هاتفي غطى الشاشة ثم اختفى برجع النشاط للدالة هاي
     @Override
     protected void onResume() {
         super.onResume();
-        // רענון הנתונים בכל פעם שחוזרים למסך - تحديث البيانات عند العودة للشاشة
+        /// רענון הנתונים בכל פעם שחוזרים למסך - تحديث البيانات عند العودة للشاشة
         loadAllRecipes();
     }
 
@@ -118,7 +118,7 @@ public class ListRecipes extends AppCompatActivity {
      */
     private void loadAllRecipes() {
         group="recipes";
-        getAllFromFirebase(adapter, null);//كبسة اظهار كل الوصفات
+        getAllFromFirebase(adapter, null);///كبسة اظهار كل الوصفات
     }
     /**
      * פונקציה להצגת מועדפים בלבד.
@@ -127,7 +127,7 @@ public class ListRecipes extends AppCompatActivity {
     private void showFavorites() {
         String myId=FirebaseAuth.getInstance().getCurrentUser().getUid();
         group="favorites_"+myId;
-        getAllFromFirebase(adapter, null);//اذا كان فاضي بعرض كل اشي بالوصفات الي انا عملتلها save
+        getAllFromFirebase(adapter, null);///اذا كان فاضي بعرض كل اشي بالوصفات الي انا عملتلها save
     }
     /**
      * دالة لعرض وصفاتي فقط.
@@ -135,36 +135,37 @@ public class ListRecipes extends AppCompatActivity {
     private void showMyRecipe(){
         String myId=FirebaseAuth.getInstance().getCurrentUser().getUid();
         group="recipes";
-        getAllFromFirebase(adapter,myId);//اخراج جميع الوصفات الي انا كتبتها بتم فحصها حسب الid الي الي
+        getAllFromFirebase(adapter,myId);///اخراج جميع الوصفات الي انا كتبتها بتم فحصها حسب الid الي الي
     }
-    private void getAllFromFirebase(MyRecipeAdapter adapter, String myId) {// جلب البيانات وعرضها في التطبيق
+    private void getAllFromFirebase(MyRecipeAdapter adapter, String myId) {/// جلب البيانات وعرضها في التطبيق
         //عنوان قاعدة البيانات
-        FirebaseDatabase database = FirebaseDatabase.getInstance();//تتصل بقاعدة البيانات
-        // عنوان مجموعة المعطيات داخل قاعدة البيانات
-        DatabaseReference myRef = database.getReference(group);
-//إضافة listener مما يسبب الإصغاء لكل تغيير حتلنة عرض المعطيات//
-        //يسمع لأي تغيير يصير في Firebase ويحدث القائمة تلقائي
-        myRef.addValueEventListener(new ValueEventListener() {//in database  myRef تقوم الدالة بتجديث واجهة المستخدم ul تلقائيا في كل مرة يتغير فيها اي معطى داخل المسار
+        FirebaseDatabase database = FirebaseDatabase.getInstance();///تتصل بقاعدة البيانات
+        /// عنوان مجموعة المعطيات داخل قاعدة البيانات
+        DatabaseReference myRef = database.getReference(group);///يخبر التطبيق أين يبحث عن البيانات
+///إضافة listener مما يسبب الإصغاء لكل تغيير حتلنة عرض المعطيات//
+        ///يسمع لأي تغيير يصير في Firebase ويحدث القائمة تلقائي
+        myRef.addValueEventListener(new ValueEventListener() {///in database  myRef تقوم الدالة بتجديث واجهة المستخدم ul تلقائيا في كل مرة يتغير فيها اي معطى داخل المسار
             @Override
-            //دالة معالج حدث تقوم بتلقى نسخة عن كل المعطيات عند أي تغيير
-            public void onDataChange(@NonNull DataSnapshot snapshot) {//تحدث القائمة تلقائياً
-                adapter.clear();//حذف كل المعطيات بالوسيط
-                for (DataSnapshot recipeSnapshot : snapshot.getChildren()) {// يتم استخدام الحلقة للمرور على كل "وصفة" موجودة تحت المسار recipe
-                    //  استخراج كل المعطيات على وتحويلها لكائن ملائم//
-                    Recipe recipe = recipeSnapshot.getValue(Recipe.class);// للحصول على كائن الوصفة, نستخدم السطر حيث يقوم ال Firebase بتحويلها تلقائيا لكائن java
-                   if(myId==null)
-                    adapter.add(recipe);//اضافة كل معطى (كائن) للمنسق
+            ///دالة معالج حدث تقوم بتلقى نسخة عن كل المعطيات عند أي تغيير
+            public void onDataChange(@NonNull DataSnapshot snapshot) {///تحمل بداخلها البيانات الفعلية DataSnapshot// تحدث القائمة تلقائياً/
+                adapter.clear();///حذف كل المعطيات بالوسيط
+                for (DataSnapshot recipeSnapshot : snapshot.getChildren()) {///"لكل وصفة موجودة في هذه القائمة، نفّذ الكود التالي
+                    ///يتم استخدام الحلقة للمرور على كل "وصفة" موجودة تحت المسار recipe
+                   //استخراج كل المعطيات على وتحويلها لكائن ملائم//
+                    Recipe recipe = recipeSnapshot.getValue(Recipe.class);/// للحصول على كائن الوصفة, نستخدم السطر حيث يقوم ال Firebase بتحويلها تلقائيا لكائن  object java
+                   if(myId==null)///تفتح الـ Snapshot وتفحص كل وصفة بالداخل: "هل صاحب هذه الوصفة (Owner) هو نفسه المستخدم الحالي؟" إذا نعم، تظهرها.
+                    adapter.add(recipe);///اضافة كل معطى (كائن) للمنسق
                     else
                    {
                        if(recipe.getOwner().equals(myId))
-                           adapter.add(recipe);//اضافة كل معطى (كائن) للمنسق
+                           adapter.add(recipe);///اضافة كل معطى (كائن) للمنسق
                    }
                 }
-                adapter.notifyDataSetChanged();//اعلام المنسق بالتغيير
+                adapter.notifyDataSetChanged();///اعلام المنسق بالتغيير
                 Toast.makeText(ListRecipes.this, "Data fetched successfully", Toast.LENGTH_SHORT).show();
             }
             @Override
-            //بحالة فشل استخراج المعطيات
+            ///بحالة فشل استخراج المعطيات
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(ListRecipes.this, "Failed to fetch data", Toast.LENGTH_SHORT).show();
             }
