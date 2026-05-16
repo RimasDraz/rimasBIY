@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
         final Handler handler = new Handler();//تنفيذ كود بعد مدة زمنية معينة
-        handler.postDelayed(new Runnable() {//تحبر البرنامج يستنى شوي وبعدها ينفذ الكود الموجود
+        handler.postDelayed(new Runnable() {//تخبر البرنامج يستنى شوي وبعدها ينفذ الكود الموجود
             @Override
             public void run() {
                 Intent i = new Intent(MainActivity.this, SignIn.class);//امر الانتقال تحديد البداية والوجهة

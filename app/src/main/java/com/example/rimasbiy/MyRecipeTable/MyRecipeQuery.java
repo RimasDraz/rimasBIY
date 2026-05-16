@@ -7,6 +7,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import java.util.List;
+/// "بوابة" توصلك للأوامر الخاصة بالوصفات (إضافة، حذف، بحث).
 /**
  * @param  توثيق 1-الدالة
  *               2-تسهيل الفهم

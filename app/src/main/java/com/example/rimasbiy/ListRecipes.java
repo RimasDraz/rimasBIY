@@ -25,7 +25,6 @@ import com.google.firebase.database.ValueEventListener;
  * شاشة عرض قائمة الوصفات.
  */
 
-//todo add bottom menu my recipes
 public class ListRecipes extends AppCompatActivity {
     private ListView lsViRecipes;
     private MyRecipeAdapter adapter;
@@ -40,10 +39,11 @@ public class ListRecipes extends AppCompatActivity {
         /// אתחול רכיבי הממשק - تهيئة عناصر الواجهة
         lsViRecipes = findViewById(R.id.lsViRecipes);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-
-        /// הגדרת המתאם (Adapter) - استخدام التصميم الصحيح لكل عنصر في القائمة
-        adapter = new MyRecipeAdapter(this, R.layout.recipe_item_layout);
-        lsViRecipes.setAdapter(adapter);
+        /// هذان السطران هما المسؤلان عن عرض البيانات فعلياً على شاشة الموبايل، وبدونهما ستظل الشاشة بيضاء حتى لو كانت قاعدة البيانات مليئة بالوصفات.
+        //הגדרת המתאם تحويل البيانات لشكل مرئيَََ_ تحديد استخدام شكل العنصر انه يكون للكل نفس الاشي(Adapter) - استخدام التصميم الصحيح لكل عنصر في القائمة
+        adapter = new MyRecipeAdapter(this, R.layout.recipe_item_layout);//الـ Adapter يعمل كـ "مُترجم"؛ فهو يأخذ البيانات الخام (نصوص وروابط صور) ويقوم بتركيبها داخل التصميم الذي صممتِهِ (recipe_item_layout).
+        //الامر النهائي الي بقول لليست انها توخذ البيانات ويجهزها للادابتير انه يعرضها
+        lsViRecipes.setAdapter(adapter);//الوظيفة: ربط القائمة (ListView) بالمُنسق الذي أنشأتِهِ.
 
         /// הגדרת מאזין לתפריט התחתון - إعداد مستمع لنقرات القائمة السفلية
         setupBottomNavigation();
@@ -85,17 +85,16 @@ public class ListRecipes extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 //معالجة حدث للموافقة
-                Toast.makeText(ListRecipes.this,"signing out",Toast.LENGTH_SHORT).show();
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(ListRecipes.this, SignIn.class));
-                finish();
+                Toast.makeText(ListRecipes.this,"signing out",Toast.LENGTH_SHORT).show();// إظهار رسالة صغيرة (فقاعة نصية) أسفل الشاشة.
+                FirebaseAuth.getInstance().signOut();///هذا هو الأمر البرمجي الفعلي الذي يتصل بـ Firebase
+                startActivity(new Intent(ListRecipes.this, SignIn.class));// الانتقال من الشاشة الحالية (ListRecipes) إلى شاشة تسجيل الدخول (SignIn).
+                finish();// إغلاق الشاشة الحالية (ListRecipes) تماماً وحذفها من ذاكرة الهاتف (Back Stack).
             }
         });
         builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {///اضافة زر مع اللسينر
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 Toast.makeText(ListRecipes.this,"signing out",Toast.LENGTH_SHORT).show();
-
             }
         });
         AlertDialog dialog=builder.create();///بناء شباك الديالوغ
@@ -107,8 +106,7 @@ public class ListRecipes extends AppCompatActivity {
     ///عن اغلاق الشاشة اذا ظهر ديالوج او اتصال هاتفي غطى الشاشة ثم اختفى برجع النشاط للدالة هاي
     @Override
     protected void onResume() {
-        super.onResume();
-        /// רענון הנתונים בכל פעם שחוזרים למסך - تحديث البيانات عند العودة للشاشة
+        super.onResume();/// רענון הנתונים בכל פעם שחוזרים למסך - تحديث البيانات عند العودة للشاشة
         loadAllRecipes();
     }
 
@@ -137,32 +135,36 @@ public class ListRecipes extends AppCompatActivity {
         group="recipes";
         getAllFromFirebase(adapter,myId);///اخراج جميع الوصفات الي انا كتبتها بتم فحصها حسب الid الي الي
     }
+    //  تتصل بـ Firebase Realtime Database وتراقب البيانات. إذا أضفتِ وصفة من هاتف آخر، ستظهر هنا فوراً بفضل الـ ValueEventListener.
     private void getAllFromFirebase(MyRecipeAdapter adapter, String myId) {/// جلب البيانات وعرضها في التطبيق
         //عنوان قاعدة البيانات
         FirebaseDatabase database = FirebaseDatabase.getInstance();///تتصل بقاعدة البيانات
         /// عنوان مجموعة المعطيات داخل قاعدة البيانات
         DatabaseReference myRef = database.getReference(group);///يخبر التطبيق أين يبحث عن البيانات
-///إضافة listener مما يسبب الإصغاء لكل تغيير حتلنة عرض المعطيات//
+        ///إضافة listener مما يسبب الإصغاء لكل تغيير حتلنة عرض المعطيات//
         ///يسمع لأي تغيير يصير في Firebase ويحدث القائمة تلقائي
         myRef.addValueEventListener(new ValueEventListener() {///in database  myRef تقوم الدالة بتجديث واجهة المستخدم ul تلقائيا في كل مرة يتغير فيها اي معطى داخل المسار
             @Override
             ///دالة معالج حدث تقوم بتلقى نسخة عن كل المعطيات عند أي تغيير
             public void onDataChange(@NonNull DataSnapshot snapshot) {///تحمل بداخلها البيانات الفعلية DataSnapshot// تحدث القائمة تلقائياً/
-                adapter.clear();///حذف كل المعطيات بالوسيط
+                adapter.clear();/// حذف كل المعطيات بالوسيط عشان متبينش مرتين او اكثر
                 for (DataSnapshot recipeSnapshot : snapshot.getChildren()) {///"لكل وصفة موجودة في هذه القائمة، نفّذ الكود التالي
                     ///يتم استخدام الحلقة للمرور على كل "وصفة" موجودة تحت المسار recipe
                    //استخراج كل المعطيات على وتحويلها لكائن ملائم//
                     Recipe recipe = recipeSnapshot.getValue(Recipe.class);/// للحصول على كائن الوصفة, نستخدم السطر حيث يقوم ال Firebase بتحويلها تلقائيا لكائن  object java
-                   if(myId==null)///تفتح الـ Snapshot وتفحص كل وصفة بالداخل: "هل صاحب هذه الوصفة (Owner) هو نفسه المستخدم الحالي؟" إذا نعم، تظهرها.
+                  //  عندما يضغط المستخدم على "عرض الكل" (All Recipes).•المعنى: "بما أننا لم نرسل معرّفاً خاصاً (ID)، فقم بإضافة كل وصفة تجدها في Firebase إلى القائمة مباشرة دون قيود".•
+                   if(myId==null)//تفتح الـ Snapshot وتفحص كل وصفة بالداخل: "هل صاحب هذه الوصفة (Owner) هو نفسه المستخدم الحالي؟" إذا نعم، تظهرها.
                     adapter.add(recipe);///اضافة كل معطى (كائن) للمنسق
                     else
                    {
+                       //  عندما يضغط المستخدم على "وصفاتي" (My Recipes).•المعنى: "لا تضف كل شيء؛ فقط الوصفة التي يكون صاحبها (Owner) هو نفسه المستخدم الحالي (myId) قم بإضافتها للمنسق".
                        if(recipe.getOwner().equals(myId))
                            adapter.add(recipe);///اضافة كل معطى (كائن) للمنسق
                    }
                 }
-                adapter.notifyDataSetChanged();///اعلام المنسق بالتغيير
-                Toast.makeText(ListRecipes.this, "Data fetched successfully", Toast.LENGTH_SHORT).show();
+                // هذا الأمر البرمجي يخبر الـ ListView: "لقد انتهينا من ترتيب وتصفية القائمة، قومي بإعادة رسم الشاشة الآن لعرض النتائج الجديدة".•بدونه: ستبقى الشاشة قديمة ولن تظهر الإضافات الجديدة إلا إذا أغلقتِ التطبيق وفتحتِهِ.
+                adapter.notifyDataSetChanged();///اعلام المنسق(كائن)  بالتغيير
+                Toast.makeText(ListRecipes.this, "Data fetched successfully", Toast.LENGTH_SHORT).show();//طمأنة المستخدم أن عملية جلب البيانات من الإنترنت تمت بنجاح (مهمة جداً في حالة كان الإنترنت بطيئاً).•
             }
             @Override
             ///بحالة فشل استخراج المعطيات

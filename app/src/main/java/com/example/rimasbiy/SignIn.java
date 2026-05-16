@@ -118,18 +118,18 @@ private boolean validateFields(){ // بتفحص اذا الباسورد والا
            //هاي دالة بتشتغل لما Firebase يخلص عملية تسجيل الدخول
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    Toast.makeText(SignIn.this,"Sining in Succeeded", LENGTH_SHORT).show();
+                    Toast.makeText(SignIn.this,"Sining in Succeeded", LENGTH_SHORT).show();///تظهر رسالة "Sining in Succeeded" (تم تسجيل الدخول بنجاح) لتطمين المستخدم.
                     //الانتقال للصفحة الرئيسية
                     Intent i=new Intent(SignIn.this,ListRecipes.class);
                     startActivity(i);
                 }
                 else{
                     Toast.makeText(SignIn.this,"sining in failed", LENGTH_SHORT).show();
-                    username.setError(task.getException().getMessage());
+                    username.setError(task.getException().getMessage());//يأخذ سبب الخطأ الحقيقي من Firebase (مثلاً: "The email address is badly formatted") ويظهره للمستخدم مباشرة فوق حقل الإدخال ليعرف ما هو خطؤه بالضبط.
                 }
             }
         });
     }
-    return flag;
+    return flag;//هذا السطر يتبع للدالة الكبيرة validateFields.•يعيد القيمة true إذا كانت الحقول مكتوبة بشكل صحيح من البداية، أو false إذا كان هناك حقل فارغ، وذلك ليخبر الزر هل يستمر في المحاولة أم يتوقف.•
 }
 }

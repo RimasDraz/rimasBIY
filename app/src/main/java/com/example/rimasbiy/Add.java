@@ -104,6 +104,7 @@ public class Add extends AppCompatActivity {
 //            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
 //            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
 //            return insets;
+        /// READ_MEDIA_IMAGES (للصور في أندرويد 13+).1.READ_MEDIA_VIDEO (للـفيديو في أندرويد 13+).2.READ_EXTERNAL_STORAGE (لكل شيء في الإصدارات الأقدم).3.
         //تسجيل طلب الأذونات دالة بتجهز كائن عشان:
         //يطلب إذن قراءة الصور
        //ويتأكد إذا المستخدم وافق أو رفض
@@ -121,8 +122,8 @@ public class Add extends AppCompatActivity {
 //دالة مسؤولة عن: فتح معرض الصور
 // لما المستخدم يختار صورة:  تخزن الرابط فيselectedImageUri تعرض الصورة في  ImageView
         requestReadMediaVideoPermission = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-            if (isGranted) {
-                Log.d(TAG, "READ_MEDIA_VIDEO permission granted");
+            if (isGranted) {/// هذا الشرط يفحص الرد القادم من نظام الأندرويد بعد أن تظهر للمستخدم نافذة "هل تسمح للتطبيق بالوصول إلى الفيديوهات؟".•إذا ضغط المستخدم على "سماح" (Allow)، تصبح قيمة isGranted هي true ويتم تنفيذ ما بداخل القوسين.
+                Log.d(TAG, "READ_MEDIA_VIDEO permission granted");///هذا السطر لا يظهر للمستخدم، بل يطبع رسالة في الـ Logcat للمبرمج.•تساعدكِ هذه الرسالة أثناء البرمجة لتتأكدي في "شاشة المراقبة" أن المستخدم أعطى الإذن فعلاً وأن الكود يعمل بشكل صحيح.
                 Toast.makeText(this, "تم منح إذن قراءة الفيديو", Toast.LENGTH_SHORT).show();
             } else {
                 Log.d(TAG, "READ_MEDIA_VIDEO permission denied");
@@ -130,24 +131,26 @@ public class Add extends AppCompatActivity {
                 // التعامل مع حالة رفض الإذن
             }
         });
-        requestReadExternalStoragePermission = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-            if (isGranted) {
+        // ستخدم التطبيق هذا "المُشغّل" (Launcher) ليطلب من المستخدم الإذن بقراءة الملفات من ذاكرة الهاتف. هذا الإذن ضروري لكي يتمكن المستخدم من اختيار صورة للوصفة من معرض الصور الخاص به.
+        requestReadExternalStoragePermission = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {//ActivityResultContracts.RequestPermission(): هذا هو "العقد" الذي يخبر النظام أننا نريد طلب إذن واحد فقط.isGranted -> { ... }: هذه دالة (Lambda) يتم استدعاؤها تلقائياً بعد أن يضغط المستخدم على "سماح" أو "رفض".
+            if (isGranted) {//ي حالة الموافقة (if (isGranted)):1.يتم تسجيل رسالة في الـ Log للمبرمج لتأكيد نجاح العملية.•يظهر Toast للمستخدم يخبره: "تم منح إذن قراءة التخزين الخارجي".•هذا يسمح للتطبيق لاحقاً بتشغيل دالة pickImage.launch("image/*") دون مشاكل.•
                 Log.d(TAG, "READ_EXTERNAL_STORAGE permission granted");
                 Toast.makeText(this, "تم منح إذن قراءة التخزين الخارجي", Toast.LENGTH_SHORT).show();
-            } else {
+            } else {//في حالة الرفض (else):2.يتم تسجيل رسالة فشل في الـ Log.•يظهر Toast تنبيهي للمستخدم: "تم رفض إذن قراءة التخزين الخارجي".•في هذه الحالة، لن يتمكن التطبيق من فتح معرض الصور، وسيحتاج المستخدم لتفعيل الإذن من إعدادات الهاتف يدوياً.•
                 Log.d(TAG, "READ_EXTERNAL_STORAGE permission denied");
-                Toast.makeText(this, "تم رفض إذن قراءة التخزين الخارجي", Toast.LENGTH_SHORT).show();
                 // التعامل مع حالة رفض الإذن
+                Toast.makeText(this, "تم رفض إذن قراءة التخزين الخارجي", Toast.LENGTH_SHORT).show();
             }
         });
-
+/// هذا الجزء من الكود هو المسؤول عن استلام الصورة بعد أن يقوم المستخدم باختيارها من معرض الصور (Gallery).
 // Initialize the ActivityResultLauncher for picking imagesتهيئة مُشغّل نتائج النشاط لاختيار الصور
-        pickImage = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {
+        pickImage = registerForActivityResult(new ActivityResultContracts.GetContent(), new ActivityResultCallback<Uri>() {// ذا السطر يقوم بإنشاء "عقد" مع نظام الأندرويد. أنتِ تقولين للنظام: "أريد استرجاع محتوى (GetContent)، وتحديداً صورة، وعندما يختار المستخدم شيئاً، نفذ الكود التالي".
             @Override
-            /// دالة onActivityResult هي "المستقبل" الذي ينتظر عودة البيانات بعد أن يقوم التطبيق بفتح شيء خارجي (مثل معرض الصور أو الكاميرا).
+            // هذه الدالة هي "نقطة اللقاء". بمجرد أن يختار المستخدم صورة من المعرض ويغلقه، يعود الأندرويد إلى تطبيقك حاملاً معه العنوان الرقمي للصورة (Uri).
+            // دالة onActivityResult هي "المستقبل" الذي ينتظر عودة البيانات بعد أن يقوم التطبيق بفتح شيء خارجي (مثل معرض الصور أو الكاميرا).
             public void onActivityResult(Uri result) {
-                if (result != null) {
-                    selectedImageUri = result;///حفظ مسار الصورة في متفير لاستعماله بعدين
+                if (result != null) {/// نتأكد أولاً أن المستخدم لم يغلق المعرض دون اختيار شيء. إذا كانت القيمة موجودة (result ليست فارغة)،
+                    selectedImageUri = result;/// نقوم بحفظ عنوان الصورة في متغير عام (selectedImageUri).•
                     imagerecipe.setImageURI(result);///عرض الصورة الموجودة في الشاشة
                     imagerecipe.setVisibility(View.VISIBLE);///تاكد انه الصورة موحودة
                 }
@@ -156,7 +159,8 @@ public class Add extends AppCompatActivity {
         imagerecipe.setOnClickListener(new View.OnClickListener() {///لما ينكبس على الـ ImageView نفّذ الكود اللي جواته
             @Override
             public void onClick(View v) {///هاي الدالة اللي بتشتغل عند الضغط.
-                pickImage.launch("image/*"); /// Launch the image picker(اختار أي نوع ملف من نوع صورة/*)
+                pickImage.launch("image/*"); ///هذا الأمر هو الذي يفتح معرض الصور فعلياً، وعند اختيار الصورة، يعود التنفيذ تلقائياً للكود
+                /// Launch the image picker(اختار أي نوع ملف من نوع صورة/*)
             }
         });
 
@@ -165,9 +169,9 @@ public class Add extends AppCompatActivity {
         checkAndRequestPermissions();//استدعاء دالة الأذونات
 
         ///تفعيل طلب الإذن
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {/// هذا الشرط يفحص إصدار نظام الأندرويد على هاتف المستخدم.•إذا كان الهاتف يعمل بنظام أندرويد 13 أو أحدث، يتم تنفيذ الكود. (لأن الإصدارات الأقدم تعطي الإذن تلقائياً ولا تحتاج لهذا الفحص).
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {// هنا يسأل الكود النظام: "هل يمتلك التطبيق حالياً إذن إرسال الإشعارات؟".•إذا كانت النتيجة "لا" (Not Granted)، ننتقل للخطوة التالية.•
+                requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);//هذا الأمر هو الذي يظهر النافذة المنبثقة للمستخدم على الشاشة والتي تحتوي على: "هل تسمح للتطبيق بإرسال إشعارات؟" (Allow / Don't Allow).•
             }
         }
     }
@@ -207,7 +211,7 @@ public class Add extends AppCompatActivity {
                     recipe.setIngredients(ingredients.getText().toString());
                     recipe.setInstructions(instructions.getText().toString());
                     recipe.setOwner(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    ///هذه الدالة يمكن استدعاؤها بعد استلام عنوان الصورة Uri وتحويلها لنص لحفظها في الصفة المخصصة لها في الكائن
+                    //هذه الدالة يمكن استدعاؤها بعد استلام عنوان الصورة Uri وتحويلها لنص لحفظها في الصفة المخصصة لها في الكائن
                     if (selectedImageUri!=null)
                     {
                         ///تحويل الصورة وحفظها
@@ -220,24 +224,25 @@ public class Add extends AppCompatActivity {
                     //save via frirebase database
                     // saveRecipe(recipe);
                 //save by service
-                    Intent serviceIntent=new Intent(this, MyService.class);///(Intent) لفتح الخدمة المسماة MyService. الخدمة تُستخدم عادةً لتنفيذ عمليات في الخلفية لا تحتاج لواجهة مستخدم.
-                    serviceIntent.putExtra("recipe_extra",recipe);///مرير كائن الوصفة (recipe) إلى الخدمة حتى تعرف الخدمة أي وصفة ستقوم بمعالجتها.
-                    serviceIntent.putExtra("group","recipes");///تمرير نص إضافي يحدد "المجموعة" (Group) لتنظيم البيانات داخل الخدمة.
-                    startService(serviceIntent);///لأمر الفعلي لتشغيل الخدمة. هنا يبدأ نظام أندرويد بتنفيذ الأكواد الموجودة داخل كلاس MyService
+                    Intent serviceIntent=new Intent(this, MyService.class);//(Intent) لفتح الخدمة المسماة MyService. الخدمة تُستخدم عادةً لتنفيذ عمليات في الخلفية لا تحتاج لواجهة مستخدم.
+                    serviceIntent.putExtra("recipe_extra",recipe);//مرير كائن الوصفة (recipe) إلى الخدمة حتى تعرف الخدمة أي وصفة ستقوم بمعالجتها.
+                    serviceIntent.putExtra("group","recipes");//تمرير نص إضافي يحدد "المجموعة" (Group) لتنظيم البيانات داخل الخدمة.
+                    startService(serviceIntent);//لأمر الفعلي لتشغيل الخدمة. هنا يبدأ نظام أندرويد بتنفيذ الأكواد الموجودة داخل كلاس MyService
                     finish();
                    // scheduleAlarm(recipe);//استدعاء دالة لبرمجة منبه أو تذكير خاص بهذه الوصفة (مثلاً لتذكير المستخدم بموعد الطبخ)، وذلك باستخدام الـAlarmManager
                 }
                 return flag;
             }
+            // هذا الكود هو "الاستئذان قبل الدخول"؛ يضمن أن التطبيق يحترم خصوصية المستخدم ويتبع قوانين أندرويد الجديدة للوصول إلى الصور.
     private void checkAndRequestPermissions() {///تفحص إذا التطبيق عنده إذن قراءة الصور
         /// فحص وطلب إذن READ_MEDIA_IMAGES (للإصدارات الحديثة)
         ///إذا الإذن مش موجود → تطلبه
         ///إذا موجود → تطبع رسالة إنه موجود
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_MEDIA_IMAGES)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {/// 1. فحص إصدار الهاتف
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_MEDIA_IMAGES)/// 2. فحص هل الإذن ممنوح أم لا؟
                     != PackageManager.PERMISSION_GRANTED) {
-                requestReadMediaImagesPermission.launch(android.Manifest.permission.READ_MEDIA_IMAGES);
-            } else {
+                requestReadMediaImagesPermission.launch(android.Manifest.permission.READ_MEDIA_IMAGES);///3. طلب الإذن (في حال عدم وجوده)
+            } else {/// 4. حالة الإذن الممنوح مسبقاً (else)
                 Log.d(TAG, "READ_MEDIA_IMAGES permission already granted");
                 Toast.makeText(this, "إذن قراءة الصور ممنوح بالفعل", Toast.LENGTH_SHORT).show();
             }
@@ -271,20 +276,20 @@ public class Add extends AppCompatActivity {
 //*
 //* @param uri The Uri of the image to convert.
 //* @return The Base64 string representation of the image.
-    /// تخزينه بسهولة في قاعدة البيانات. تحويل الصورة لنص
+    // تخزينه بسهولة في قاعدة البيانات. تحويل الصورة لنص
     public String convertImageToString(Uri uri) {
         InputStream inputStream = null;
         String imageString = null;
-        /// تحتوي هذه الدالة على وظيفة تحويل الصورة من مكان التخزين المؤقت إلى نص بنموذج Base64 ليتم تخزينه في قاعدة البيانات، وهذا يتيح للبرنامج عرض الصورة من قاعدة البيانات في وقت لاحق بدون الحاجة إلى فتح الصورة من جهاز المستخدم.
+        // تحتوي هذه الدالة على وظيفة تحويل الصورة من مكان التخزين المؤقت إلى نص بنموذج Base64 ليتم تخزينه في قاعدة البيانات، وهذا يتيح للبرنامج عرض الصورة من قاعدة البيانات في وقت لاحق بدون الحاجة إلى فتح الصورة من جهاز المستخدم.
         try {
-            inputStream = getContentResolver().openInputStream(uri);///فتح قناة اتصال (Stream) لقراءة البيانات الخام للصورة من العنوان (uri) الذي اختاره المستخدم من معرض الصور.
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);///تحويل البيانات المقروءة إلى كائن Bitmap، وهو التنسيق الذي يتعامل معه أندرويد لعرض ومعالجة الصور برمجياً.
-            if (bitmap == null) {
-                Toast.makeText(this, "Failed to process image", Toast.LENGTH_SHORT).show();
-                return null;
+            inputStream = getContentResolver().openInputStream(uri);//فتح قناة اتصال لقراءة البيانات الخام للصورة من العنوان (uri) الذي اختاره المستخدم من معرض الصور.
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);//تحويل البيانات المقروءة إلى كائن Bitmap، وهو التنسيق الذي يتعامل معه أندرويد لعرض ومعالجة الصور برمجياً.
+            if (bitmap == null) {// الهدف من الفحص (bitmap == null)عندما نطلب من النظام قراءة صورة من مسار معين (Uri)، قد يفشل النظام في تحويل هذا المسار إلى صورة حقيقية (Bitmap) لعدة أسباب
+                Toast.makeText(this, "Failed to process image", Toast.LENGTH_SHORT).show();///تنبيه المستخدم برسالة نصية فورية.
+                return null;// إيقاف العملية فوراً في حال حدوث خلل تقني.
             }
             // Compress image to keep Base64 string within reasonable limit
-            ///ضغط الصورة وتحويلها إلى صيغة JPEG بجودة 40%. هذه الخطوة ضرورية جداً لتقليل حجم النص الناتج، لأن قواعد البيانات لها حدود في استيعاب النصوص الطويلة جداً.
+            //ضغط الصورة وتحويلها إلى صيغة JPEG بجودة 40%. هذه الخطوة ضرورية جداً لتقليل حجم النص الناتج، لأن قواعد البيانات لها حدود في استيعاب النصوص الطويلة جداً.
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 40, outputStream);
             byte[] imageBytes = outputStream.toByteArray();// الصورة المضغوطة إلى مصفوفة من البايتات (Bytes) تمهيداً لتشفيرها
@@ -297,7 +302,7 @@ public class Add extends AppCompatActivity {
         }
     }
     ///حفظ الوصفة في Firebase Realtime Database
-    //غيتها لاني حفظت بالسيرفيس
+    //لغيتها لاني حفظت بالسيرفيس
     public void saveRecipe(Recipe recipe) {//في قاعدة البيانات "recipe" الحصول على مرجع الى عقدة
         //تهيئة  Firebase Realtime Database // مؤشر لقاعدة البيانات
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
@@ -336,11 +341,12 @@ public class Add extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         // تسجيل الreceiver
-        IntentFilter filter = new IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED);
-        registerReceiver(systemEventsReceiver, filter);
+        IntentFilter filter = new IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED);//هذا السطر يحدد "نوع الحدث" الذي نريد مراقبته. تطلبين من الأندرويد تنبيه تطبيقك فقط عند تغير وضع الطيران (ACTION_AIRPLANE_MODE_CHANGED).
+        registerReceiver(systemEventsReceiver, filter);//: تفعيل المراقبة (التسجيل).•المعنى: "يا نظام الأندرويد، من الآن فصاعداً، إذا تغير وضع الطيران، أرسل إشارة إلى الكلاس المسمى systemEventsReceiver الموجود عندي ليتصرف".•
     }
 
     @Override
+    // تُستدعى هذه الدالة عندما تختفي الشاشة تماماً عن نظر المستخدم (مثلاً عند إغلاق التطبيق أو فتح تطبيق آخر).
     protected void onStop() {
         super.onStop();
         //. قم بإلغاء تسجيله في onStop (عندما يصبح النشاط غير مرئي)

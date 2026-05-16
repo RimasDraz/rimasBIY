@@ -33,7 +33,7 @@ public class SmartRecipeAssistant extends AppCompatActivity {
     private TextView tvAiResponse;
     private ProgressBar pbLoading;
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint("MissingInflatedId")// عبارة عن "تنبيه للمجمّع" (Annotation) يخبر نظام أندرويد ستوديو بتجاهل نوع معين من التحذيرات
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +54,7 @@ public class SmartRecipeAssistant extends AppCompatActivity {
         model = GenerativeModelFutures.from(ai); //GenerativeModelFutures. هذا الكلاس هو الذي يضمن أن التطبيق لن يتجمد (Freeze) أثناء انتظار رد الذكاء الاصطناعي من الإنترنت.
 
 
-        String text = etRecipeTopic.getText().toString();
+        String text = etRecipeTopic.getText().toString();//قوم بأخذ النص لحظة تشغيل الشاشة فقط.
         btnSuggestSteps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,10 +62,10 @@ public class SmartRecipeAssistant extends AppCompatActivity {
                 // ضغط على الزر لضمان أخذ ما كتبه المستخدم فعلياً
                 String text = etRecipeTopic.getText().toString().trim();
 
-                if (text.isEmpty()) {
+                if (text.isEmpty()) {//إذا ترك المستخدم الحقل فارغاً وضغط على الزر، يظهر له Toast يخبره: "من فضلك أدخل اسم الوصفة أولاً".
                     Toast.makeText(SmartRecipeAssistant.this, "Please enter a recipe name", Toast.LENGTH_SHORT).show();
                 } else {
-                    askFirebaseAiGeminiForRecipe(text);
+                    askFirebaseAiGeminiForRecipe(text);//ذا كان النص موجوداً (ليس فارغاً)، نقوم بإرسال هذا النص (موضوع الوصفة) إلى الدالة التي تتواصل مع خوادم Google Gemini.
 
                 }
             }
@@ -104,8 +104,8 @@ public class SmartRecipeAssistant extends AppCompatActivity {
                     @Override
                     // في حالة الفشل (مثلاً: انقطاع الإنترنت أو خطأ في الخادم)
                     public void onFailure(Throwable t) {
-                        pbLoading.setVisibility(View.GONE);
-                        btnSuggestSteps.setEnabled(true);
+                        pbLoading.setVisibility(View.GONE);//إخفاء دائرة التحميل (ProgressBar).
+                        btnSuggestSteps.setEnabled(true);//إعادة تفعيل زر "Suggest Steps".
                         // عرض رسالة خطأ للمستخدم توضح المشكلة
                         Toast.makeText(SmartRecipeAssistant.this, "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
                     }

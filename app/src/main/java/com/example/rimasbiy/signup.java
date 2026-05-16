@@ -83,7 +83,6 @@ public class signup extends AppCompatActivity {
          * عند الضغط على زر btnsign يتم التحقق من صحة الحقول باستخدام الدالة validateFields()
          * إذا كانت الحقول صالحة، يتم انشاء كائن جديد من Myuser وتم ادخال البيانات في الحقول
          * في قاعدة البيانات باستخدام AppDatabase.getInstance(signup.this).myuserQuery().insertAll(myuser);
-         * ثم يتم انتقل إلى الصفحة الرئيسية HomeScreen
          * إذا كانت الحقول غير صالحة، يتم عرض رسالة خطأ باستخدام Toast
          */
 
@@ -137,8 +136,7 @@ public class signup extends AppCompatActivity {
             TextPasswordd.setError("Passwords do not match");
             flag = false;
         }
-        if(flag)
-        {
+        if(flag) {
             Myuser myuser = new Myuser();//انشاء كائن
             myuser.setEmail(email);
             myuser.setPhone(phone);
@@ -146,18 +144,17 @@ public class signup extends AppCompatActivity {
             //حفظ في قاعدة البيانات
             AppDatabase.getInstance(signup.this).myuserQuery().insertAll(myuser);
             //كائن لعملية التسجيل
-            FirebaseAuth auth=FirebaseAuth.getInstance();
+            FirebaseAuth auth = FirebaseAuth.getInstance();
             // في firebase انشاء حساب بواسطة الميل و السسما
-            auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {//
+            auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {//
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {// اذا العملية زبطت او لا فبطلع الجواب
-                    if(task.isSuccessful()){//اذا العملية زبطت
-                        Toast.makeText(signup.this,"Signing up Succeeded",Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                    else{
-                        Toast.makeText(signup.this,"Sining up Failed",Toast.LENGTH_SHORT).show();//ظهور رسالة انه التسجيل خاطئ
-                        EmailText.setError(task.getException().getMessage());
+                    if (task.isSuccessful()) {//اذا العملية زبطت في السيرفر
+                        Toast.makeText(signup.this, "Signing up Succeeded", Toast.LENGTH_SHORT).show();
+                        finish(); //إغلاق شاشة التسجيل والعودة للخلف
+                    } else {
+                        Toast.makeText(signup.this, "Sining up Failed", Toast.LENGTH_SHORT).show();//ظهور رسالة انه التسجيل خاطئ
+                        EmailText.setError(task.getException().getMessage());// إظهار سبب الخطأ للمستخدم
                     }
                 }
             });
